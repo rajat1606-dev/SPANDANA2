@@ -66,13 +66,13 @@ def main() -> None:
         s_va, s_te = val[col].values, test[col].values
         thr_tuned = tuned_threshold(y_va, s_va)
         if classic is not None:  # fixed literature threshold
-            pred_va = s_va >= classic
             thr_classic = float(classic)
-        else:  # sex-specific classic thresholds
-            thr_classic = float(per_row_thr[0])
-            pred_va = s_va >= val["cornell_threshold_mV"].values
+            classic_pred_te = s_te >= thr_classic
+        else:  # sex-specific classic thresholds, applied per recording
+            thr_classic = float(per_row_thr[0])  # representative value, display only
+            classic_pred_te = s_te >= test["cornell_threshold_mV"].values
         m = classification_metrics(y_te, s_te >= thr_tuned, s_te)
-        m_classic = classification_metrics(y_te, s_te >= thr_classic, s_te)
+        m_classic = classification_metrics(y_te, classic_pred_te, s_te)
         methods[key] = {"name": API_NAMES[key], "family": "criterion",
                         "score_column": col,
                         "classic_threshold_mV": thr_classic,
