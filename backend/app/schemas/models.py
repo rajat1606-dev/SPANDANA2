@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 LeadArrays = dict[str, list[float]]
 
@@ -19,7 +19,20 @@ LeadArrays = dict[str, list[float]]
 class PatientIn(BaseModel):
     code: str | None = None
     age: int | None = Field(default=None, ge=0, le=130)
-    sex: Literal["male", "female", "unknown", None] = None
+    sex: str | None = None
+
+    @field_validator("sex")
+    @classmethod
+    def _normalise_sex(cls, v: str | None) -> str | None:
+        """Accept any case ("Male", "FEMALE", ...) and blanks."""
+        if v is None:
+            return None
+        s = str(v).strip().lower()
+        if s == "":
+            return None
+        if s not in ("male", "female", "unknown"):
+            raise ValueError("sex must be male, female, unknown or null")
+        return s
 
 
 class WaveformIn(BaseModel):

@@ -58,7 +58,8 @@ async def screen_endpoint(request: FastAPIRequest) -> ScreenResponse:
             leads, fs = decode_upload(data, upload.filename or "upload", hea_data)
         except EcgDecodeError as e:
             raise HTTPException(422, str(e)) from e
-        patient_sex = sex if sex in ("male", "female", "unknown") else None
+        sex_norm = sex.strip().lower() if isinstance(sex, str) else None
+        patient_sex = sex_norm if sex_norm in ("male", "female", "unknown") else None
         patient_age_raw = form.get("age")
         try:
             patient_age = int(patient_age_raw) if patient_age_raw else None
