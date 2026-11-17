@@ -116,6 +116,9 @@ def main() -> None:
     args = ap.parse_args()
 
     cfg = load_config()
+    seed = int(cfg.cnn.get("random_state", 42))
+    np.random.seed(seed)
+    torch.manual_seed(seed)
     c = cfg.cnn
     batch_size = args.batch_size or c["batch_size"]
     epochs = args.epochs or c["epochs"]
@@ -156,7 +159,8 @@ def main() -> None:
     dl_tr = torch.utils.data.DataLoader(
         SignalDataset(cfg.signals_path, tr_df["row_idx"].values, y_tr, mean, std),
         batch_size=batch_size, shuffle=True, num_workers=c["num_workers"],
-        drop_last=False, pin_memory=device.type == "cuda")
+        drop_last=False, pin_memory=device.type == "cuda",
+        generator=torch.Generator().manual_seed(seed))
     dl_va = torch.utils.data.DataLoader(
         SignalDataset(cfg.signals_path, va_df["row_idx"].values, y_va, mean, std),
         batch_size=batch_size, shuffle=False, num_workers=c["num_workers"])
