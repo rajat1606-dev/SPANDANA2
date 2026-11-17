@@ -61,9 +61,9 @@ def main() -> None:
     parsed = db["scp_codes"].map(parse_scp)
     lvh_likelihood = parsed.map(lambda d: d.get("LVH", 0.0) if "LVH" in d else 0.0)
 
-    # PTB-XL sex coding: 0 = female, 1 = male (verified against the paper's
-    # 52% female share). Map to strings for the sex-specific Cornell cutoff.
-    sex = db["sex"].map({0: "female", 1: "male"})
+    # PTB-XL sex coding: 0 = male, 1 = female (per the dataset documentation;
+    # the cohort is ~52% male). Map to strings for the sex-specific Cornell cutoff.
+    sex = db["sex"].map({0: "male", 1: "female"})
 
     label = pd.Series(LABEL_CTRL, index=db.index)
     label[(lvh_likelihood > 0) & (lvh_likelihood < thr)] = LABEL_LOW
