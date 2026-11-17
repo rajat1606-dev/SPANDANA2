@@ -160,6 +160,9 @@ def main() -> None:
     dl_va = torch.utils.data.DataLoader(
         SignalDataset(cfg.signals_path, va_df["row_idx"].values, y_va, mean, std),
         batch_size=batch_size, shuffle=False, num_workers=c["num_workers"])
+    dl_tr_eval = torch.utils.data.DataLoader(
+        SignalDataset(cfg.signals_path, tr_df["row_idx"].values, y_tr, mean, std),
+        batch_size=batch_size, shuffle=False, num_workers=c["num_workers"])
 
     # ---- model / optimiser ----------------------------------------------
     channels = tuple(c["channels"])
@@ -201,15 +204,14 @@ def main() -> None:
         train_loss = run_loss / seen
 
         m = evaluate(model, dl_va, device)
+        m_tr = evaluate(model, dl_tr_eval, device)
         scheduler.step(m["auprc"])
         history["epoch"].append(epoch)
         history["loss"].append(round(train_loss, 5))
         history["val_loss"].append(round(m["loss"], 5))
-        history["auprc"].append(round(average_precision_score(
-            y_tr, _score(dl_tr, model, device)), 5))
+        history["auprc"].append(round(m_tr["auprc"], 5))
         history["val_auprc"].append(round(m["auprc"], 5))
-        history["auroc"].append(round(roc_auc_score(
-            y_tr, _score(dl_tr, model, device)), 5))
+        history["auroc"].append(round(m_tr["auroc"], 5))
         history["val_auroc"].append(round(m["auroc"], 5))
         secs = round(time.time() - t0, 1)
         history["seconds"].append(secs)
@@ -251,15 +253,6 @@ def main() -> None:
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
     print(f"saved: {best_path}\nsaved: {meta_path}")
     plot_history(history, run_dir / "training_history.png")
-
-
-def _score(loader, model, device) -> np.ndarray:
-    """Sigmoid scores over a loader (used for train-split curves)."""
-    out = []
-    with torch.no_grad():
-        for xb, _ in loader:
-            out.append(torch.sigmoid(model(xb.to(device))).cpu().numpy())
-    return np.concatenate(out)
 
 
 if __name__ == "__main__":
