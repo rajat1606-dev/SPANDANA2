@@ -27,3 +27,6 @@ Thumbs.db
 tsconfig.tsbuildinfo
 # this project uses bun.lock; a stray npm lockfile invites divergence
 package-lock.json
+
+# Claude Code session tooling (local only)
+.claude/
