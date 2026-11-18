@@ -9,11 +9,9 @@
  *   data/cnn_runs/history.json              CNN training history
  *   backend/models/metrics.json             test-set metrics (strat_fold 10)
  *
- * Sex correction: the committed CSVs were written before the sex-coding fix
- * and use PTB-XL's mapping inverted (0 -> female). The correct coding is
- * 0 = male, 1 = female, so every sex below is flipped from the stored value.
- * Confirmed empirically: the stored "female" share is 52.1%, which matches
- * PTB-XL's published ~52% MALE share.
+ * Sex convention: the source CSV stores a male share of 0.4807. PTB-XL's
+ * cohort is ~52% male, so this file was written with the pre-fix (inverted)
+ * mapping and the sexes below are flipped from the stored value.
  */
 
 import type { CohortLabel, Sex } from "@/lib/ecg/types";
