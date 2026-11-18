@@ -23,7 +23,7 @@ function BackendChip({ status }: { status: BackendStatus | null }) {
       title={
         connected
           ? "FastAPI research backend reachable — real inference will be used."
-          : "FastAPI backend not connected. SPANDANA is running in demo mode with simulated outputs."
+          : "FastAPI backend not connected. Voltage criteria still work; model predictions are unavailable."
       }
     >
       <span
@@ -33,7 +33,7 @@ function BackendChip({ status }: { status: BackendStatus | null }) {
         )}
         aria-hidden
       />
-      {connected ? "FastAPI connected" : "FastAPI offline · demo mode"}
+      {connected ? "FastAPI connected" : "FastAPI offline"}
     </span>
   );
 }
@@ -118,11 +118,11 @@ export function Header({
         </Button>
       </div>
 
-      {/* Persistent research disclaimer strip */}
+      {/* Persistent safety strip */}
       <div className="flex items-center gap-2 border-t border-amber-100 bg-amber-50/70 px-4 py-1.5 sm:px-6 lg:px-8">
         <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-600" aria-hidden />
         <p className="truncate text-[11px] text-amber-800">
-          Academic research prototype — not a certified diagnostic system. Do not use for clinical decisions; outputs do not replace ECG interpretation, echocardiography or medical judgment.
+          Not a certified diagnostic system. Do not use for clinical decisions; outputs do not replace ECG interpretation, echocardiography or medical judgment.
         </p>
       </div>
     </header>

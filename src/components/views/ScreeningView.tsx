@@ -3,9 +3,9 @@
 /**
  * AI Screening — Perceptron and CNN LVH probability outputs.
  *
- * In demo mode every probability is produced by a fixed logistic simulator
- * and flagged SIMULATED. When the FastAPI backend is connected, real model
- * inference replaces the simulator automatically (see lib/api.ts).
+ * Every probability here comes from the trained PTB-XL models served by the
+ * FastAPI backend (see lib/api.ts). When the backend has not scored the
+ * selected recording the view says so instead of showing a number.
  */
 
 import { BrainCircuit, Cpu, Gauge, Info, ShieldAlert } from "lucide-react";
@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AnalysisMetaRow, AnalysisSelector } from "@/components/shared/AnalysisSelector";
-import { DemoDataBadge, ModelChip, SimulatedTag } from "@/components/shared/badges";
+import { ModelChip } from "@/components/shared/badges";
 import { useAnalysesStore, useSelectedAnalysis } from "@/store/analyses";
 import { cn } from "@/lib/utils";
 
@@ -93,13 +93,71 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
   if (!selected) {
     return (
       <Card className="p-10 text-center text-sm text-muted-foreground shadow-sm">
-        No recording available. Upload or select a demo recording first.
+        No recording available. Upload a recording or pick one from the PTB-XL library.
       </Card>
     );
   }
 
+  // AI results come only from the FastAPI research backend. Until it has
+  // scored this recording there is nothing truthful to display here.
+  if (selected.predictions.length === 0) {
+    return (
+      <div className="space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <AnalysisSelector
+            value={selected.id}
+            analyses={analyses}
+            onChange={(id) => useAnalysesStore.getState().selectAnalysis(id)}
+          />
+          <Badge variant="outline" className="border-slate-300 bg-slate-50 text-slate-700">
+            Backend offline
+          </Badge>
+        </div>
+
+        <AnalysisMetaRow analysis={selected} />
+
+        <Card className="border-slate-200 bg-slate-50/60 shadow-sm">
+          <CardContent className="flex items-start gap-3 p-4">
+            <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-slate-500" aria-hidden />
+            <div className="text-sm leading-relaxed text-slate-700">
+              <span className="font-semibold text-slate-900">
+                No model output for this recording yet.{" "}
+              </span>
+              Perceptron and CNN scores are produced only by the trained PTB-XL
+              models behind the FastAPI backend. Start it with{" "}
+              <code className="rounded bg-slate-200 px-1 font-mono text-[11px]">
+                ./run_backend.ps1
+              </code>{" "}
+              and set{" "}
+              <code className="rounded bg-slate-200 px-1 font-mono text-[11px]">
+                NEXT_PUBLIC_FASTAPI_URL
+              </code>
+              ; the recording is then scored via{" "}
+              <code className="rounded bg-slate-200 px-1 font-mono text-[11px]">
+                POST /api/v1/screen
+              </code>
+              . The voltage criteria on the Traditional Analysis page are
+              measured in-browser and remain available.
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-sm">
+          <CardContent className="p-5 text-sm text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => onNavigate("criteria")}
+              className="font-semibold text-[#1d6fbe] underline-offset-2 hover:underline"
+            >
+              View the Sokolow–Lyon and Cornell results for this recording →
+            </button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const [perceptron, cnn] = selected.predictions;
-  const allSimulated = selected.predictions.every((p) => p.simulated);
 
   return (
     <div className="space-y-5">
@@ -109,38 +167,23 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
           analyses={analyses}
           onChange={(id) => useAnalysesStore.getState().selectAnalysis(id)}
         />
-        {allSimulated ? <DemoDataBadge>Simulated inference</DemoDataBadge> : <Badge className="bg-emerald-600">Backend inference</Badge>}
+        <Badge className="bg-emerald-600">Backend inference</Badge>
       </div>
 
       <AnalysisMetaRow analysis={selected} />
 
-      {/* Honest-data banner — reflects whether inference was real */}
-      {allSimulated ? (
-        <Card className="border-amber-200 bg-amber-50/60 shadow-sm">
-          <CardContent className="flex items-start gap-3 p-4">
-            <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden />
-            <div className="text-sm leading-relaxed text-amber-800">
-              <span className="font-semibold text-amber-900">These are not clinical predictions. </span>
-              In this demo build the “model outputs” below come from a fixed logistic simulator so the
-              interface can be evaluated end-to-end. Real Perceptron/CNN inference is issued to the
-              FastAPI backend at <code className="rounded bg-amber-100 px-1 font-mono text-[11px]">POST /api/v1/screen</code>{" "}
-              as soon as it is configured.
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="border-emerald-200 bg-emerald-50/60 shadow-sm">
-          <CardContent className="flex items-start gap-3 p-4">
-            <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
-            <div className="text-sm leading-relaxed text-emerald-800">
-              <span className="font-semibold text-emerald-900">Real model inference. </span>
-              The outputs below were produced by the trained Perceptron and CNN (PTB-XL research
-              models) served by the FastAPI backend. SPANDANA is an academic prototype — never a
-              substitute for clinical evaluation or echocardiography.
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Every value below came from the backend's trained models. */}
+      <Card className="border-emerald-200 bg-emerald-50/60 shadow-sm">
+        <CardContent className="flex items-start gap-3 p-4">
+          <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
+          <div className="text-sm leading-relaxed text-emerald-800">
+            <span className="font-semibold text-emerald-900">Real model inference. </span>
+            The outputs below were produced by the trained Perceptron and CNN (PTB-XL
+            models) served by the FastAPI backend. They are never a substitute for clinical
+            evaluation or echocardiography.
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Perceptron */}
@@ -148,7 +191,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
               <ModelChip model="perceptron" />
-              {perceptron.simulated ? <SimulatedTag /> : <Badge className="bg-emerald-600">REAL</Badge>}
+              <Badge className="bg-emerald-600">REAL</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -199,7 +242,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
               <ModelChip model="cnn" />
-              {cnn.simulated ? <SimulatedTag /> : <Badge className="bg-emerald-600">REAL</Badge>}
+              <Badge className="bg-emerald-600">REAL</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -233,9 +276,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
             </div>
             <div>
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {cnn.simulated
-                  ? "Learned feature emphasis (simulated saliency)"
-                  : "Learned feature emphasis (real gradient saliency)"}
+                Learned feature emphasis (gradient saliency)
               </p>
               <ContributionBars contributions={cnn.contributions} />
             </div>
@@ -265,7 +306,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
             </p>
           </div>
           <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4">
-            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Simulated AI consensus</p>
+            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Model consensus</p>
             <p className="mt-1 text-sm font-semibold text-[#0b1728]">
               {perceptron.positive && cnn.positive
                 ? "Both models above threshold"

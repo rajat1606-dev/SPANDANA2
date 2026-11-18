@@ -6,7 +6,7 @@
  * Single-page research workspace: the sidebar switches modules via state,
  * mirrored to the URL hash (#/screening …) so views are deep-linkable and
  * the browser back/forward buttons work. All data flows through the
- * Zustand analyses store, which seeds the curated demo library on first
+ * Zustand analyses store, which seeds the real PTB-XL case library on first
  * load and rehydrates uploaded analyses from localStorage.
  */
 
@@ -65,7 +65,7 @@ export default function Home() {
 
   useEffect(() => {
     const store = useAnalysesStore.getState();
-    store.ensureDemos();
+    store.ensureLibrary();
     store.rehydrateWaveforms();
     const next = useAnalysesStore.getState();
     if (!next.selectedId || !next.analyses.some((a) => a.id === next.selectedId)) {

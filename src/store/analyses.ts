@@ -5,10 +5,9 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { generateWaveform } from "@/lib/ecg/waveform";
 import { computeCriteria } from "@/lib/ecg/criteria";
 import {
-  createDemoAnalyses,
+  createLibraryAnalyses,
   deriveInterpretation,
-  simulatePredictions,
-} from "@/lib/demo-data";
+} from "@/lib/case-library";
 import type { EcgAnalysis } from "@/lib/ecg/types";
 
 export type ViewId =
@@ -24,13 +23,11 @@ export type ViewId =
 interface AnalysesState {
   analyses: EcgAnalysis[];
   selectedId: string | null;
-  demoMode: boolean;
   addAnalysis: (a: EcgAnalysis) => void;
   selectAnalysis: (id: string | null) => void;
   addAndSelect: (a: EcgAnalysis) => void;
-  setDemoMode: (v: boolean) => void;
-  /** Seed the curated demo library when it is not present. */
-  ensureDemos: () => void;
+  /** Seed the real PTB-XL case library when it is not present. */
+  ensureLibrary: () => void;
   /** Regenerate runtime waveforms after persistence rehydration. */
   rehydrateWaveforms: () => void;
 }
@@ -42,14 +39,37 @@ interface AnalysesState {
 function regenerate(a: EcgAnalysis): EcgAnalysis {
   const waveform = generateWaveform(a.spec);
   const criteria = computeCriteria(waveform, a.meta.sex);
-  const predictions = simulatePredictions(a.spec.seed, waveform, a.meta.age);
+  // Predictions are never regenerated locally; they only ever come from the
+  // FastAPI backend, so whatever the analysis already holds is preserved.
+  const predictions = a.predictions ?? [];
   return {
     ...a,
     waveform,
     criteria,
     predictions,
     interpretation: deriveInterpretation({ criteria, predictions }),
+    awaitingBackend: predictions.length === 0,
   };
+}
+
+/**
+ * Storage keys this app has used. Anything other than the current key is
+ * dead weight: zustand never reads it again, but it keeps occupying the
+ * origin's localStorage budget and makes QuotaExceededError on the live
+ * key more likely, so it is removed once on startup.
+ */
+const STORAGE_KEY = "spandana-analyses-v2";
+const LEGACY_STORAGE_KEYS = ["spandana-analyses-v1"];
+
+function dropLegacyStorage(): void {
+  if (typeof window === "undefined") return;
+  for (const key of LEGACY_STORAGE_KEYS) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* storage unavailable — nothing to reclaim */
+    }
+  }
 }
 
 /** Newest decoded uploads kept in localStorage (analyses are newest-first). */
@@ -72,7 +92,7 @@ function pruneForStorage(analyses: EcgAnalysis[]): EcgAnalysis[] {
 /**
  * localStorage wrapper that survives QuotaExceededError: on failure it
  * progressively drops older decoded recordings and retries (twice), so a
- * large upload can never break state updates or lose the demo library.
+ * large upload can never break state updates or lose the PTB-XL library.
  */
 const quotaSafeLocalStorage: Storage = {
   get length() {
@@ -128,7 +148,7 @@ const quotaSafeLocalStorage: Storage = {
         parsedJson.state = { ...parsedJson.state, analyses: slimmed };
         localStorage.setItem(name, JSON.stringify(parsedJson));
       } catch {
-        // Second retry: drop ALL decoded recordings, keep the light demo data.
+        // Second retry: drop ALL decoded recordings, keep the light library data.
         try {
           const parsedJson = JSON.parse(value) as {
             state?: { analyses?: { id: string; spec?: { parsed?: unknown } }[] };
@@ -154,17 +174,17 @@ export const useAnalysesStore = create<AnalysesState>()(
     (set, get) => ({
       analyses: [],
       selectedId: null,
-      demoMode: true,
       addAnalysis: (a) => set((s) => ({ analyses: [a, ...s.analyses] })),
       selectAnalysis: (id) => set({ selectedId: id }),
       addAndSelect: (a) =>
         set((s) => ({ analyses: [a, ...s.analyses], selectedId: a.id })),
-      setDemoMode: (v) => set({ demoMode: v }),
-      /** Seed the curated demo library when it is not present. */
-      ensureDemos: () => {
+      /** Seed the real PTB-XL case library when it is not present. */
+      ensureLibrary: () => {
+        dropLegacyStorage();
         const current = get().analyses;
-        if (!current.some((a) => a.id.startsWith("demo-"))) {
-          set({ analyses: [...createDemoAnalyses(), ...current] });
+        if (!current.some((a) => a.id.startsWith("ptbxl-"))) {
+          const stale = current.filter((a) => !a.id.startsWith("demo-"));
+          set({ analyses: [...createLibraryAnalyses(), ...stale] });
         }
       },
       rehydrateWaveforms: () => {
@@ -175,7 +195,10 @@ export const useAnalysesStore = create<AnalysesState>()(
       },
     }),
     {
-      name: "spandana-analyses-v1",
+      // v2: the demo library and the local prediction simulator were removed;
+      // bumping the key drops any persisted "demo-" analyses from v1, and
+      // dropLegacyStorage() reclaims the space the v1 entry still occupied.
+      name: STORAGE_KEY,
       storage: createJSONStorage(() => quotaSafeLocalStorage),
       partialize: (state) => ({
         // Decoded recordings carry up to ~250 KB of samples each — keep only
@@ -190,7 +213,7 @@ export const useAnalysesStore = create<AnalysesState>()(
   ),
 );
 
-/** Select a demo analysis or fall back to the first available one. */
+/** Select the active analysis, or fall back to the first available one. */
 export function useSelectedAnalysis(): EcgAnalysis | null {
   const analyses = useAnalysesStore((s) => s.analyses);
   const selectedId = useAnalysesStore((s) => s.selectedId);

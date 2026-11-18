@@ -2,8 +2,9 @@
  * SPANDANA – AI Cardiac Intelligence
  * Core ECG domain types.
  *
- * All waveform data in this application is SYNTHETIC demonstration data
- * unless it originates from a connected research backend (FastAPI).
+ * Waveform traces are either decoded from an uploaded recording, or
+ * rendered from the measured voltages of a real PTB-XL recording. AI
+ * predictions are only ever produced by the FastAPI research backend.
  */
 
 export const LEAD_NAMES = [
@@ -31,7 +32,7 @@ export const LEAD_GROUPS: { name: string; leads: LeadName[] }[] = [
   { name: "Precordial leads V4–V6", leads: ["V4", "V5", "V6"] },
 ];
 
-/** Target deflection amplitudes (mV) used by the synthetic waveform generator. */
+/** Target deflection amplitudes (mV) used by the waveform renderer. */
 export interface LeadTargets {
   /** R-peak amplitude (positive deflection, mV). */
   r: number;
@@ -70,14 +71,21 @@ export interface ParsedSpecData {
  * Deterministic specification from which a 10-second 12-lead waveform
  * can be regenerated (stored instead of raw samples to keep state light).
  * When `parsed` is present the waveform is the REAL decoded signal
- * instead of the synthetic generator output.
+ * instead of the rendered output.
  */
 export interface WaveformSpec {
   seed: string;
-  /** Heart rate: configured for synthetic specs, detected for parsed ones (0 = unavailable). */
+  /** Heart rate: configured for rendered specs, detected for parsed ones (0 = unavailable). */
   bpm: number;
   profile: Record<LeadName, LeadTargets>;
   parsed?: ParsedSpecData;
+  /**
+   * Authoritative per-lead amplitudes that override whatever is measured
+   * from a rendered trace. Used by the real PTB-XL case library so the
+   * criteria are computed from the dataset's own measured voltages rather
+   * than from the drawing, which only approximates the morphology.
+   */
+  measured?: Partial<Record<LeadName, Partial<LeadAmplitudes>>>;
 }
 
 /** Measured QRS amplitudes for one lead (mV, S given as positive magnitude). */
@@ -90,24 +98,29 @@ export interface EcgWaveform {
   sampleRate: number;
   durationSec: number;
   bpm: number;
-  /** Beat onset times (seconds) — synthetic grid or detected R peaks. */
+  /** Beat onset times (seconds) — rendered grid or detected R peaks. */
   beats: number[];
   leads: Record<LeadName, number[]>;
   /** Amplitudes measured from the signal (mV). */
   amplitudes: Record<LeadName, LeadAmplitudes>;
-  /** Where the displayed heart rate comes from (synthetic = configured). */
+  /** Where the displayed heart rate comes from ("config" = nominal, not detected). */
   hrSource?: "config" | "detected" | "unavailable";
 }
 
 export type Sex = "Male" | "Female";
 
-export type AnalysisSource = "demo-library" | "file-upload";
+export type AnalysisSource = "ptbxl-library" | "file-upload";
 
-/** Provenance of the displayed waveform. */
-export type SignalOrigin = "synthetic" | "decoded-file";
+/**
+ * Provenance of the displayed waveform.
+ *  - "decoded-file"  : real samples parsed from an uploaded recording
+ *  - "reconstructed" : real PTB-XL measured voltages, trace rendered for
+ *                      display because the raw signal is not in the repo
+ */
+export type SignalOrigin = "decoded-file" | "reconstructed";
 
-/** Ground-truth-ish cohort label used for demo curation only. */
-export type DemoLabel = "lvh-positive" | "lvh-negative" | "borderline";
+/** Cardiologist SCP outcome for a library recording. */
+export type CohortLabel = "lvh-positive" | "lvh-negative" | "borderline";
 
 export interface PatientMeta {
   code: string;
@@ -115,8 +128,8 @@ export interface PatientMeta {
   sex: Sex;
   source: AnalysisSource;
   sourceFile?: string;
-  /** Cohort label curated for the demo library (not a clinical truth). */
-  demoLabel: DemoLabel;
+  /** Cardiologist SCP outcome for a library recording (not echo-confirmed). */
+  cohortLabel: CohortLabel;
   /** "decoded-file" = waveform parsed from the uploaded recording in-browser. Optional for pre-v2 persisted analyses. */
   signalOrigin?: SignalOrigin;
 }
@@ -155,18 +168,13 @@ export type ModelId = "perceptron" | "cnn";
 
 export interface ModelPrediction {
   model: ModelId;
-  /** Simulated LVH probability in [0,1]. */
+  /** LVH probability in [0,1], from the FastAPI research backend. */
   probability: number;
   positive: boolean;
-  /** Decision threshold used (0.5). */
+  /** Decision threshold used (tuned on validation fold 9). */
   threshold: number;
   latencyMs: number;
-  /**
-   * TRUE whenever the value was produced by the local demo simulator
-   * instead of a real inference call against the FastAPI backend.
-   */
-  simulated: boolean;
-  /** Top contributing features from the simulated decision function. */
+  /** Top contributing features, when the backend reports them. */
   contributions: { feature: string; weight: number; value: number }[];
 }
 
@@ -181,11 +189,12 @@ export interface EcgAnalysis {
   /** Runtime waveform (regenerated from spec; not persisted). */
   waveform: EcgWaveform;
   criteria: CriteriaResult;
+  /** Empty until the FastAPI backend returns real inference. */
   predictions: ModelPrediction[];
   interpretation: Interpretation;
   notes: string;
-  /** TRUE for every analysis that has not been verified against a backend model. */
-  isDemoData: boolean;
+  /** TRUE while no backend model has scored this recording. */
+  awaitingBackend: boolean;
 }
 
 /** Public performance metrics for the model comparison module. */

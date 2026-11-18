@@ -5,19 +5,19 @@ import {
   Activity,
   ArrowRight,
   BookOpen,
-  FlaskConical,
   Gauge,
   HeartPulse,
   ScanHeart,
   UploadCloud,
 } from "lucide-react";
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
+  Legend,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -29,26 +29,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatCard, SectionHeading } from "@/components/shared/StatCard";
-import { VerdictBadge, DemoDataBadge } from "@/components/shared/badges";
+import { VerdictBadge } from "@/components/shared/badges";
 import { LeadSparkline } from "@/components/ecg/EcgGrid";
 import { useAnalysesStore, type ViewId } from "@/store/analyses";
-import { MODEL_METRICS, SCREENING_TREND } from "@/lib/demo-data";
+import {
+  CHART_AXIS_LINE,
+  CHART_AXIS_TEXT,
+  CHART_GRID,
+  CHART_LABEL_TEXT,
+  CHART_MAGNITUDE,
+  CHART_SERIES,
+  OUTCOME_COLORS,
+} from "@/lib/chart-palette";
+import {
+  CNN_HEADLINE,
+  CNN_TRAINING_HISTORY,
+  DATASET_STATS,
+  MODEL_METRICS,
+} from "@/lib/real-data";
 import { formatDistanceToNow } from "date-fns";
-
-const DONUT_COLORS = ["#0b1728", "#1d6fbe", "#089fbf", "#b45309"];
 
 export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void }) {
   const analyses = useAnalysesStore((s) => s.analyses);
   const selectAnalysis = useAnalysesStore((s) => s.selectAnalysis);
 
-  const cohortTotal = useMemo(
-    () => SCREENING_TREND.reduce((acc, d) => acc + d.analyses, 0),
-    [],
-  );
-  const cohortPositive = useMemo(
-    () => SCREENING_TREND.reduce((acc, d) => acc + d.positive, 0),
-    [],
-  );
+  const testLvhPct = (
+    (DATASET_STATS.test.lvh / DATASET_STATS.test.total) *
+    100
+  ).toFixed(1);
 
   const outcomeSplit = useMemo(() => {
     const counts = { positive: 0, negative: 0, discordant: 0 };
@@ -87,7 +95,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <div className="max-w-2xl">
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="border-cyan-400/40 bg-cyan-400/10 text-cyan-300">
-                <FlaskConical className="h-3 w-3" aria-hidden /> Research prototype · demo mode
+                PTB-XL test fold 10
               </Badge>
               <Badge variant="outline" className="hidden border-white/20 bg-white/5 text-white/80 sm:inline-flex">
                 PTB-XL based workflow
@@ -98,9 +106,9 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#b9c8da]">
               SPANDANA compares classic voltage criteria (Sokolow–Lyon, Cornell) with
-              Perceptron and CNN models on 10-second recordings. Every figure in this
-              build is clearly-labelled demonstration data — connect the FastAPI
-              research backend to run real inference.
+              Perceptron and CNN models on 10-second recordings. Every figure below is
+              measured on PTB-XL — connect the FastAPI research backend to score your
+              own recordings.
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Button
@@ -140,30 +148,30 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           icon={ScanHeart}
-          label="ECG analyses (30-day cohort)"
-          value={String(cohortTotal)}
-          sub="Demonstration statistics"
+          label="PTB-XL recordings analysed"
+          value={DATASET_STATS.totalUsed.toLocaleString()}
+          sub={`${DATASET_STATS.excludedLowCertainty.toLocaleString()} low-certainty labels excluded`}
           tone="blue"
         />
         <StatCard
           icon={HeartPulse}
-          label="LVH patterns flagged"
-          value={`${cohortPositive} (${((cohortPositive / cohortTotal) * 100).toFixed(1)}%)`}
-          sub="Voltage criteria or simulated AI positive"
+          label="LVH in held-out test fold"
+          value={`${DATASET_STATS.test.lvh} (${testLvhPct}%)`}
+          sub={`Of ${DATASET_STATS.test.total.toLocaleString()} recordings, cardiologist-confirmed`}
           tone="amber"
         />
         <StatCard
           icon={Activity}
-          label="Recordings in workspace"
-          value={String(analyses.length)}
-          sub="Demo library + your uploads"
+          label="CNN detections on test fold"
+          value={`${CNN_HEADLINE.caught}/${CNN_HEADLINE.ofPositives}`}
+          sub={`${CNN_HEADLINE.falseAlarms} false alarms of ${CNN_HEADLINE.ofControls.toLocaleString()} controls`}
           tone="navy"
         />
         <StatCard
           icon={Gauge}
-          label="Best illustrative ROC-AUC"
-          value="0.91"
-          sub="CNN model · demo value, not measured"
+          label="Best ROC-AUC (PTB-XL test)"
+          value={CNN_HEADLINE.rocAuc.toFixed(2)}
+          sub="CNN · measured on PTB-XL test set"
           tone="cyan"
         />
       </div>
@@ -173,33 +181,41 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         <Card className="shadow-sm xl:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
-              <span>Screening activity — last 14 days</span>
-              <DemoDataBadge />
+              <span>
+                CNN training history — validation ({CNN_TRAINING_HISTORY.length} epochs)
+              </span>
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={SCREENING_TREND} margin={{ top: 8, right: 12, left: -18, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="spAreaBlue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#1d6fbe" stopOpacity={0.28} />
-                    <stop offset="100%" stopColor="#1d6fbe" stopOpacity={0.02} />
-                  </linearGradient>
-                  <linearGradient id="spAreaCyan" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#089fbf" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#089fbf" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={{ stroke: "#dfe6ef" }} interval="preserveStartEnd" />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
+              <LineChart data={CNN_TRAINING_HISTORY} margin={{ top: 8, right: 12, left: -18, bottom: 0 }}>
+                <CartesianGrid stroke={CHART_GRID} vertical={false} />
+                <XAxis dataKey="epoch" tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={{ stroke: CHART_AXIS_LINE }} interval="preserveStartEnd" />
+                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }}
                   labelStyle={{ fontWeight: 600, color: "#0b1728" }}
                 />
-                <Area type="monotone" dataKey="analyses" name="Analyses" stroke="#1d6fbe" strokeWidth={2} fill="url(#spAreaBlue)" />
-                <Area type="monotone" dataKey="positive" name="Flagged positive" stroke="#089fbf" strokeWidth={2} fill="url(#spAreaCyan)" />
-              </AreaChart>
+                <Legend wrapperStyle={{ fontSize: 12 }} iconType="plainline" iconSize={14} />
+                <Line
+                  type="monotone"
+                  dataKey="valAuroc"
+                  name="Validation ROC-AUC"
+                  stroke={CHART_SERIES.light[0]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="valAuprc"
+                  name="Validation PR-AUC"
+                  stroke={CHART_SERIES.light[1]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -208,7 +224,6 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
               <span>Workspace outcomes</span>
-              <DemoDataBadge />
             </CardTitle>
           </CardHeader>
           <CardContent className="flex h-[260px] flex-col">
@@ -224,7 +239,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                   strokeWidth={2}
                 >
                   {outcomeSplit.map((entry, i) => (
-                    <Cell key={entry.key} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
+                    <Cell key={entry.key} fill={OUTCOME_COLORS[i % OUTCOME_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} />
@@ -233,7 +248,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
             <ul className="mt-1 space-y-1.5 text-xs text-muted-foreground">
               {outcomeSplit.map((entry, i) => (
                 <li key={entry.key} className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-sm" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
+                  <span className="h-2.5 w-2.5 rounded-sm" style={{ background: OUTCOME_COLORS[i % OUTCOME_COLORS.length] }} />
                   {entry.name} — <span className="sp-tabular font-semibold text-[#0b1728]">{entry.value}</span>
                 </li>
               ))}
@@ -247,22 +262,18 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
-              <span>Model ROC-AUC (illustrative)</span>
-              <DemoDataBadge />
+              <span>Model ROC-AUC (PTB-XL test set)</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={aucData} layout="vertical" margin={{ top: 4, right: 28, left: 8, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" horizontal={false} />
-                <XAxis type="number" domain={[0, 1]} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
-                <YAxis type="category" dataKey="model" width={92} tick={{ fontSize: 11.5, fill: "#0b1728" }} tickLine={false} axisLine={false} />
+                <CartesianGrid stroke={CHART_GRID} horizontal={false} />
+                <XAxis type="number" domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="model" width={92} tick={{ fontSize: 11.5, fill: CHART_LABEL_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} cursor={{ fill: "#f1f5fa" }} />
-                <Bar dataKey="auc" name="ROC-AUC" radius={[0, 5, 5, 0]} barSize={18}>
-                  {aucData.map((d, i) => (
-                    <Cell key={d.model} fill={i < 2 ? "#62a8e0" : i === 2 ? "#1d6fbe" : "#0b1728"} />
-                  ))}
-                </Bar>
+                {/* One measure, one hue: the bar length carries the value. */}
+                <Bar dataKey="auc" name="ROC-AUC" radius={[0, 5, 5, 0]} barSize={18} fill={CHART_MAGNITUDE} />
               </BarChart>
             </ResponsiveContainer>
             <p className="-mt-2 text-[11px] text-muted-foreground">

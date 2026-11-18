@@ -1,6 +1,6 @@
 "use client";
 
-import { HeartPulse, FlaskConical, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import { NAV_SECTIONS, type NavItem } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import type { ViewId } from "@/store/analyses";
@@ -113,18 +113,18 @@ export function SidebarContent({
         ))}
       </nav>
 
-      {/* Research prototype notice */}
+      {/* Safety notice */}
       <div className="border-t border-[#1c2f47] px-4 py-4">
         <div className="rounded-lg border border-amber-400/25 bg-amber-400/10 p-3">
           <p className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-300">
-            <FlaskConical className="h-3.5 w-3.5" aria-hidden /> Research prototype
+            <ShieldAlert className="h-3.5 w-3.5" aria-hidden /> Not a medical device
           </p>
           <p className="mt-1 text-[10.5px] leading-relaxed text-[#9fb2c8]">
-            Academic demo — not a certified medical device. All values are simulated.
+            Outputs must not be used for clinical decisions.
           </p>
         </div>
         <p className="mt-3 text-center text-[10px] text-[#5c7189]">
-          SPANDANA v0.1.0 · Demo build
+          SPANDANA v0.1.0
         </p>
       </div>
     </div>

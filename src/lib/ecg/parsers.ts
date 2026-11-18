@@ -15,8 +15,8 @@
  * length, unit scaling, ADC gain when no header is provided) is reported
  * back as an explicit warning so the UI can show it verbatim to the user.
  *
- * The AI screening stage remains SIMULATED in demo mode — decoding a real
- * signal is measurement, not model inference.
+ * Decoding a signal is measurement, not model inference — AI screening is
+ * performed only by the FastAPI backend.
  */
 
 import { LEAD_NAMES, type LeadName } from "./types";

@@ -73,6 +73,7 @@ switch ($Stage) {
         Run "inspect_dataset.py"
         Run "extract_lvh.py"
         Run "create_splits.py"
+        Run "preprocess_ecg.py"
         Run "extract_features.py"
     }
     "all" {

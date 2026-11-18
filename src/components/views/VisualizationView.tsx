@@ -37,12 +37,20 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
   if (!selected) {
     return (
       <Card className="p-10 text-center text-sm text-muted-foreground shadow-sm">
-        No recording available. Upload or select a demo recording first.
+        No recording available. Upload a recording or pick one from the PTB-XL library.
       </Card>
     );
   }
 
   const decoded = selected.meta.signalOrigin === "decoded-file";
+
+  // A decoded upload is measured throughout. For a PTB-XL library recording
+  // only the components carried in spec.measured come from the dataset; the
+  // rest of the amplitude table is produced by the trace renderer and must
+  // not be presented as a measurement.
+  const measuredAmps = selected.spec.measured;
+  const isMeasured = (lead: LeadName, component: "r" | "s") =>
+    decoded || measuredAmps?.[lead]?.[component] !== undefined;
   const leads = showAll ? undefined : (["I", "II", "V1", "V5"] as LeadName[]);
   const hrLabel = selected.spec.bpm > 0 ? `${selected.spec.bpm} bpm` : "n/a";
   const hrSub =
@@ -111,7 +119,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
               note={
                 decoded
                   ? "Display sweep auto-scaled · signal decoded from the uploaded file (real samples)"
-                  : "Display sweep 25 mm/s · auto-scaled gain (nominal 10 mm/mV) · synthetic signal"
+                  : "Display sweep 25 mm/s · auto-scaled gain (nominal 10 mm/mV) · rendered from measured voltages"
               }
             />
           </CardContent>
@@ -156,7 +164,8 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Ruler className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Measured amplitudes
+                <Ruler className="h-5 w-5 text-[#1d6fbe]" aria-hidden />{" "}
+                {decoded ? "Measured amplitudes" : "Lead amplitudes"}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -188,8 +197,27 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                                 </Tooltip>
                               )}
                             </TableCell>
-                            <TableCell className="sp-tabular text-right">{amp.r.toFixed(2)}</TableCell>
-                            <TableCell className="sp-tabular text-right pr-6">{amp.s.toFixed(2)}</TableCell>
+                            {(["r", "s"] as const).map((component) => {
+                              const real = isMeasured(lead, component);
+                              return (
+                                <TableCell
+                                  key={component}
+                                  className={cn(
+                                    "sp-tabular text-right",
+                                    component === "s" && "pr-6",
+                                    !real && "italic text-muted-foreground/70",
+                                  )}
+                                  title={
+                                    real
+                                      ? "Measured value"
+                                      : "From the rendered trace — not a dataset measurement"
+                                  }
+                                >
+                                  {real ? "" : "~"}
+                                  {amp[component].toFixed(2)}
+                                </TableCell>
+                              );
+                            })}
                           </TableRow>
                         );
                       },
@@ -200,6 +228,14 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
               <div className="border-t border-[#eef2f8] px-6 py-3">
                 <p className="text-[11px] leading-relaxed text-muted-foreground">
                   Highlighted rows feed the voltage criteria.{" "}
+                  {!decoded && (
+                    <>
+                      Only the five voltages those criteria use (SV1, SV3, RV5,
+                      RV6, RaVL) are the dataset’s own measurements; every value
+                      shown as <span className="italic">~0.00</span> is read off
+                      the rendered trace and is not a PTB-XL measurement.{" "}
+                    </>
+                  )}
                   <button className="font-medium text-[#1d6fbe] hover:underline" onClick={() => onNavigate("criteria")}>
                     Open Traditional Analysis →
                   </button>
@@ -214,7 +250,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           description={
             decoded
               ? "Traces are rendered from the signal decoded in-browser from the uploaded recording (auto-scaled for display). Amplitudes are measured globally against the median baseline — a deliberately simple research measurement, not a clinical interpretation."
-              : "All traces are rendered from the deterministic demonstration generator at 500 Hz over 10 seconds. Uploaded recordings are decoded in-browser when a CSV matrix or PhysioNet-style .dat/.hea record is provided; research deployments can also render decoded waveforms returned by the FastAPI backend."
+              : "This trace is rendered at 500 Hz over 10 seconds from the recording’s measured QRS voltages — PTB-XL’s raw signal archive is not bundled with this build, so the morphology is illustrative while the voltages driving both criteria are the dataset’s own. Uploaded recordings are decoded in-browser from a CSV matrix or PhysioNet-style .dat/.hea record and show real samples."
           }
         />
       </div>

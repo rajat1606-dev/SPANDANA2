@@ -3,8 +3,8 @@
  *
  * SPANDANA ships as a research frontend. When the Python FastAPI backend
  * becomes available, set NEXT_PUBLIC_FASTAPI_URL (e.g. http://localhost:8000)
- * and the app will automatically switch from demo simulation to real
- * inference. Expected contract (all responses JSON):
+ * and the app will serve real model inference. Without it the app shows
+ * voltage criteria only. Expected contract (all responses JSON):
  *
  *   GET  {base}/health
  *        → { status: "ok", models: ["perceptron", "cnn"], version: "1.0" }
@@ -16,8 +16,8 @@
  *        }
  *        → {
  *          predictions: [
- *            { model: "perceptron", probability: 0.0-1.0, latencyMs, simulated: false },
- *            { model: "cnn", probability: 0.0-1.0, latencyMs, simulated: false }
+ *            { model: "perceptron", probability: 0.0-1.0, latencyMs },
+ *            { model: "cnn", probability: 0.0-1.0, latencyMs }
  *          ]
  *        }
  *
@@ -25,8 +25,8 @@
  *        → { metrics: [ { model, accuracy, precision, sensitivity,
  *                         specificity, f1, rocAuc } ] }
  *
- * Until a successful /health response is observed the UI stays in
- * DEMO MODE and clearly labels every number as simulated.
+ * Until a successful /health response is observed the UI shows voltage
+ * criteria only and states that model output is unavailable.
  */
 
 import type { EcgWaveform, ModelPrediction, PatientMeta } from "@/lib/ecg/types";
@@ -105,8 +105,8 @@ export interface ScreenResponse {
 
 /**
  * Request real inference from the FastAPI backend.
- * Returns null when the backend is not reachable so callers can fall back
- * to the clearly-labelled demo simulator.
+ * Returns null when the backend is not reachable; callers then leave the
+ * analysis without predictions rather than inventing them.
  */
 export async function requestModelInference(
   req: ScreenRequest,
@@ -162,8 +162,8 @@ export interface MetricsResponse {
 
 /**
  * Fetch real validation metrics from the FastAPI backend (module 6).
- * Returns null when the backend is not configured/reachable so callers
- * can keep rendering the clearly-labelled illustrative dataset.
+ * Returns null when the backend is not configured/reachable so callers can
+ * fall back to the measured metrics bundled in lib/real-data.ts.
  */
 export async function fetchModelMetrics(
   timeoutMs = 5000,

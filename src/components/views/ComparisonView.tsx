@@ -5,11 +5,13 @@
  * accuracy, precision, sensitivity, specificity, F1-score, ROC-AUC (and
  * PR-AUC when provided).
  *
- * When the FastAPI backend is reachable the REAL evaluation metrics
- * (PTB-XL, patient-wise test fold 10) are fetched from
- * GET /api/v1/models/metrics and every table/chart switches to them with
- * a green badge. Otherwise the clearly-labelled illustrative demo dataset
- * is shown.
+ * When the FastAPI backend is reachable the evaluation metrics (PTB-XL,
+ * patient-wise test fold 10) are fetched live from
+ * GET /api/v1/models/metrics, together with the measured ROC/PR curves.
+ * Otherwise the table falls back to the SAME measured results bundled with
+ * this build (MODEL_METRICS, copied from backend/models/metrics.json) — the
+ * numbers are real either way; only the ROC curve shapes are then
+ * approximated from the measured AUCs.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -36,9 +38,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DemoDataBadge } from "@/components/shared/badges";
-import { MODEL_METRICS } from "@/lib/demo-data";
+import { ApproximationBadge } from "@/components/shared/badges";
+import { MODEL_METRICS } from "@/lib/real-data";
 import { rocCurveFromAuc } from "@/lib/stats";
+import {
+  CHART_AXIS_LINE,
+  CHART_AXIS_TEXT,
+  CHART_GRID,
+  MODEL_COLORS,
+} from "@/lib/chart-palette";
 import { fetchModelMetrics, type BackendModelMetric } from "@/lib/api";
 
 const METRIC_COLS = [
@@ -50,19 +58,13 @@ const METRIC_COLS = [
   { key: "rocAuc", label: "ROC-AUC" },
 ] as const;
 
-const MODEL_COLORS: Record<string, string> = {
-  "Sokolow–Lyon": "#7fb3e3",
-  Cornell: "#089fbf",
-  Perceptron: "#1d6fbe",
-  CNN: "#0b1728",
-};
+// Model identity comes from the shared validated palette so a method keeps
+// the same colour here and on the dashboard.
 
-const ROC_CURVES = [
-  { model: "Sokolow–Lyon", color: "#7fb3e3" },
-  { model: "Cornell", color: "#089fbf" },
-  { model: "Perceptron", color: "#1d6fbe" },
-  { model: "CNN", color: "#0b1728" },
-];
+const ROC_CURVES = Object.keys(MODEL_COLORS).map((model) => ({
+  model,
+  color: MODEL_COLORS[model],
+}));
 
 const METRIC_DEFINITIONS: { term: string; text: string }[] = [
   { term: "Accuracy", text: "Share of all recordings classified correctly." },
@@ -190,7 +192,12 @@ export function ComparisonView() {
                 Real evaluation — PTB-XL test fold 10
               </Badge>
             ) : (
-              <DemoDataBadge>Illustrative values — not measured by SPANDANA</DemoDataBadge>
+              <Badge
+                variant="outline"
+                className="gap-1 border-sky-300 bg-sky-50 font-medium text-sky-800"
+              >
+                Measured — PTB-XL test fold 10 (bundled snapshot)
+              </Badge>
             )}
           </CardTitle>
         </CardHeader>
@@ -249,9 +256,12 @@ export function ComparisonView() {
               </>
             ) : (
               <>
-                Published studies report ECG voltage-criteria sensitivity of roughly
-                10–50% against echocardiographic LVH with high specificity; the values
-                here follow that pattern as illustrative placeholders.
+                Values are the measured SPANDANA results bundled with this build
+                (<code className="rounded bg-[#f1f5fa] px-1 font-mono">backend/models/metrics.json</code>):
+                patient-wise test split (strat_fold 10) of PTB-XL v1.0.3, thresholds
+                tuned on validation fold 9 only. Labels are SCP ECG statements, not
+                echo-confirmed diagnoses. Connect the backend to serve them live,
+                with measured ROC curves and PR-AUC.
               </>
             )}{" "}
             Source: <code className="rounded bg-[#f1f5fa] px-1 font-mono">GET /api/v1/models/metrics</code>.
@@ -270,9 +280,9 @@ export function ComparisonView() {
           <CardContent className="h-[340px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={groupedData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }} barGap={2}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" vertical={false} />
-                <XAxis dataKey="metric" tick={{ fontSize: 10.5, fill: "#5b6b7f" }} tickLine={false} axisLine={{ stroke: "#dfe6ef" }} interval={0} />
-                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
+                <CartesianGrid stroke={CHART_GRID} vertical={false} />
+                <XAxis dataKey="metric" tick={{ fontSize: 10.5, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={{ stroke: CHART_AXIS_LINE }} interval={0} />
+                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} cursor={{ fill: "#f1f5fa" }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} iconType="circle" iconSize={8} />
                 {metrics.map((m) => (
@@ -289,15 +299,21 @@ export function ComparisonView() {
             <CardTitle className="flex items-center justify-between text-base">
               <span className="flex items-center gap-2">
                 <LineChartIcon className="h-5 w-5 text-[#1d6fbe]" aria-hidden />{" "}
-                {realCurves ? "ROC curves (measured — test fold 10)" : "ROC curves (binormal, from AUC)"}
+                {realCurves
+                  ? "ROC curves (measured — test fold 10)"
+                  : "ROC curves (binormal, approximated from measured AUC)"}
               </span>
-              {realCurves ? <Badge className="bg-emerald-600">REAL</Badge> : <DemoDataBadge />}
+              {realCurves ? (
+                <Badge className="bg-emerald-600">REAL</Badge>
+              ) : (
+                <ApproximationBadge>Curve shape approximated</ApproximationBadge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[340px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={rocData} margin={{ top: 4, right: 12, left: -18, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" />
+                <CartesianGrid stroke={CHART_GRID} />
                 <XAxis
                   dataKey="fpr"
                   type="number"
@@ -379,9 +395,9 @@ export function ComparisonView() {
             ) : (
               <>
                 <p>
-                  This module currently reads from the local demo dataset
-                  {fetchError ? ` (${fetchError})` : ""}. To publish real validation
-                  results from your research pipeline:
+                  The table above uses the measured results bundled with this build
+                  {fetchError ? ` (${fetchError})` : ""}. Connect the FastAPI backend
+                  to serve them live, along with measured ROC curves and PR-AUC:
                 </p>
                 <ol className="ml-4 list-decimal space-y-1.5 text-[12.5px]">
                   <li>
@@ -397,8 +413,8 @@ export function ComparisonView() {
                   </li>
                 </ol>
                 <p className="rounded-md bg-white p-2.5 text-[11.5px]">
-                  Until then, every number on this page is an interface placeholder and is
-                  labelled as such.
+                  Until then the metrics shown are the committed snapshot of the real
+                  evaluation; only the ROC curve shapes on this page are approximated.
                 </p>
               </>
             )}

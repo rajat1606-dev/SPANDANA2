@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Shared semantic badges that keep demo data unmistakably separated
- * from anything that could be mistaken for a clinical result.
+ * Shared semantic badges that make the provenance of every figure
+ * explicit, so nothing can be mistaken for a clinical result.
  */
 
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +10,13 @@ import { FlaskConical, TriangleAlert, CheckCircle2, MinusCircle, Shuffle, Databa
 import type { Interpretation, PatientMeta } from "@/lib/ecg/types";
 import { cn } from "@/lib/utils";
 
-export function DemoDataBadge({
+/**
+ * Caution badge for a figure that is derived or approximated rather than
+ * measured directly (for example a curve shape reconstructed from an AUC).
+ */
+export function ApproximationBadge({
   className,
-  children = "Demo data",
+  children = "Approximated",
 }: {
   className?: string;
   children?: React.ReactNode;
@@ -31,23 +35,11 @@ export function DemoDataBadge({
   );
 }
 
-export function SimulatedTag({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-sm border border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-wider text-amber-800",
-        className,
-      )}
-    >
-      SIMULATED
-    </span>
-  );
-}
-
 /**
  * Signal provenance: a decoded uploaded recording (real samples parsed
- * in-browser) versus the synthetic demonstration generator. Model outputs
- * are always labelled separately — decoding is measurement, not inference.
+ * in-browser) versus a trace rendered from a PTB-XL recording's measured
+ * voltages. Model outputs are labelled separately — decoding is
+ * measurement, not inference.
  */
 export function SignalOriginBadge({ meta }: { meta: PatientMeta }) {
   if (meta.signalOrigin === "decoded-file") {
@@ -61,7 +53,15 @@ export function SignalOriginBadge({ meta }: { meta: PatientMeta }) {
       </Badge>
     );
   }
-  return <DemoDataBadge>Synthetic demo signal</DemoDataBadge>;
+  return (
+    <Badge
+      variant="outline"
+      className="gap-1 border-sky-300 bg-sky-50 font-medium text-sky-800"
+    >
+      <Database className="h-3 w-3" aria-hidden />
+      Rendered from measured voltages
+    </Badge>
+  );
 }
 
 const verdictStyles: Record<Interpretation, { cls: string; icon: React.ElementType; label: string }> = {
@@ -114,9 +114,9 @@ export function CriterionPill({ positive }: { positive: boolean }) {
 }
 
 export function SourceBadge({ meta }: { meta: PatientMeta }) {
-  return meta.source === "demo-library" ? (
+  return meta.source === "ptbxl-library" ? (
     <Badge variant="outline" className="gap-1 border-sky-200 bg-sky-50 text-sky-700">
-      <Database className="h-3 w-3" aria-hidden /> Demo library
+      <Database className="h-3 w-3" aria-hidden /> PTB-XL library
     </Badge>
   ) : (
     <Badge variant="outline" className="gap-1 border-cyan-200 bg-cyan-50 text-cyan-800">
