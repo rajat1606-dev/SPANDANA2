@@ -37,7 +37,7 @@ Tests:
 
 ```powershell
 python -m pytest training/tests backend/tests -q   # 22 pass / 2 skip
-npx tsx scripts/ecg_sanity.ts                      # asserts UI criteria == feature_rows.csv
+npm run test:ecg                                   # asserts UI criteria == feature_rows.csv
 npm run lint && npx tsc --noEmit
 ```
 
@@ -73,8 +73,7 @@ unused scaffolding — nothing imports it.
       1. `ReportsView` prints rendered heart rate / beats / duration / sampling as
          if they were the recording's own values.
       2. "Sampling 500 Hz" contradicts the 100 Hz records this project reads.
-      3. Nothing runs `scripts/ecg_sanity.ts` — no npm script, no CI.
-      4. `LEGACY_STORAGE_KEYS` in `src/store/analyses.ts` won't cover a future
+      3. `LEGACY_STORAGE_KEYS` in `src/store/analyses.ts` won't cover a future
          persist-key bump.
 - [ ] **The outcomes donut** on the dashboard is still a donut; ranked bars or a
       segmented bar would compare close values better.
