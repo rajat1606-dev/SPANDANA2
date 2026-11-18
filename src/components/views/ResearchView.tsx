@@ -262,8 +262,8 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
           <CardContent className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
             {[
               {
-                t: "Research prototype",
-                d: "SPANDANA is not a certified medical device (no CE/CDSCO/FDA mark). It must never guide diagnosis or treatment.",
+                t: "Not a certified device",
+                d: "SPANDANA carries no CE/CDSCO/FDA mark. It must never guide diagnosis or treatment.",
               },
               {
                 t: "Low sensitivity of ECG criteria",
@@ -279,7 +279,7 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
               },
               {
                 t: "Privacy",
-                d: "ECGs are personal health data. Upload only synthetic or fully anonymised recordings to a research prototype.",
+                d: "ECGs are personal health data. Upload only synthetic or fully anonymised recordings.",
               },
               {
                 t: "Human oversight",
