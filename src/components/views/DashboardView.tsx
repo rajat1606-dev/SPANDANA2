@@ -174,7 +174,9 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         <Card className="shadow-sm xl:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
-              <span>CNN training history — validation (21 epochs)</span>
+              <span>
+                CNN training history — validation ({CNN_TRAINING_HISTORY.length} epochs)
+              </span>
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[260px]">
