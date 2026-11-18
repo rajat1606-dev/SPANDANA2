@@ -30,3 +30,4 @@ package-lock.json
 
 # Claude Code session tooling (local only)
 .claude/
+CLAUDE.md
