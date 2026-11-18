@@ -18,13 +18,13 @@ export function Footer() {
             <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
               Academic research prototype for LVH screening research on 10-second 12-lead ECGs.
               Not a certified medical diagnostic system and not a replacement for clinicians,
-              ECG interpretation or echocardiography. Demo content is simulated; nothing here
+              ECG interpretation or echocardiography. Nothing here
               constitutes medical advice.
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-start gap-1 text-[11px] text-muted-foreground md:items-end">
             <span className="rounded-full border border-[#dfe6ef] px-2 py-0.5">Research use only</span>
-            <span>v0.1.0 · Demo build · FastAPI-ready</span>
+            <span>v0.1.0 · Research prototype · FastAPI-ready</span>
           </div>
         </div>
       </div>

@@ -3,13 +3,13 @@
 /**
  * ECG Analysis — drag & drop upload for 10-second 12-lead recordings.
  *
- * Demo-mode behaviour (honest by design): uploaded .csv/.txt matrices and
+ * Honest by design: uploaded .csv/.txt matrices and
  * PhysioNet-style .dat/.hea records are REALLY decoded in the browser
  * (see lib/ecg/parsers.ts), voltage criteria are measured from the decoded
- * samples, and AI screening stays SIMULATED until the FastAPI research
+ * samples, and AI screening stays empty until the FastAPI research
  * backend is configured. Files that cannot be decoded fail with an
  * explicit, actionable error — the app never silently substitutes a
- * synthetic signal for an unreadable upload.
+ * rendered substitute for an unreadable upload.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -38,10 +38,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { VerdictBadge, DemoDataBadge, SimulatedTag, SignalOriginBadge } from "@/components/shared/badges";
+import { VerdictBadge, SignalOriginBadge } from "@/components/shared/badges";
 import { LeadSparkline } from "@/components/ecg/EcgGrid";
 import { useAnalysesStore, type ViewId } from "@/store/analyses";
-import { createDecodedAnalysis, deriveInterpretation } from "@/lib/demo-data";
+import { createDecodedAnalysis, deriveInterpretation } from "@/lib/case-library";
 import {
   EcgParseError,
   parseCsvEcg,
@@ -70,7 +70,7 @@ const INITIAL_STEPS: PipelineStep[] = [
   { key: "decode", label: "Decode signal", detail: "In-browser parsing of the recording", status: "pending" },
   { key: "measure", label: "Measure & normalise", detail: "Baseline, per-lead voltages, heart rate", status: "pending" },
   { key: "criteria", label: "Traditional criteria", detail: "Sokolow–Lyon and Cornell from measured voltages", status: "pending" },
-  { key: "ai", label: "AI screening", detail: "Perceptron + CNN (simulated in demo mode)", status: "pending" },
+  { key: "ai", label: "AI screening", detail: "Perceptron + CNN (FastAPI backend)", status: "pending" },
 ];
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -141,7 +141,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
           if (f.size > MAX_FILE_BYTES) {
             throw new EcgParseError(
               "unknown-type",
-              `${f.name}: ${(f.size / 1024 / 1024).toFixed(1)} MB exceeds the 20 MB demo-mode limit.`,
+              `${f.name}: ${(f.size / 1024 / 1024).toFixed(1)} MB exceeds the 20 MB upload limit.`,
               "Downsample or truncate the recording before uploading.",
             );
           }
@@ -245,18 +245,18 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
         );
         setProgress(76);
 
-        /* 5 — AI screening: try real backend first, fall back to simulator */
+        /* 5 — AI screening: the backend is the only source of predictions */
         setStep("ai", "running");
-        let backendNote = "FastAPI offline — simulated model outputs";
+        let backendNote = "FastAPI offline — no model output";
         if (apiConfigured()) {
           backendNote = "Attempting real inference…";
         }
         setStep("ai", "running", backendNote);
         await sleep(200);
 
-        // Forward-ready hook: when the FastAPI backend is configured this
-        // call performs real inference on the DECODED samples; in demo mode
-        // it returns null and the clearly-labelled simulator results are kept.
+        // The backend performs real inference on the DECODED samples. When it
+        // is not configured this returns null and the analysis keeps no
+        // predictions at all, rather than inventing them.
         const real = apiConfigured()
           ? await requestModelInference({
               patient: { code: analysis.meta.code, age: ageNum, sex },
@@ -269,15 +269,15 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
           : null;
 
         if (real && real.predictions.length === 2) {
-          /* Replace the simulator placeholders with REAL backend outputs.
-             Criteria were already measured locally from the decoded samples
-             (same conventions as the backend), so only the AI block changes. */
+          /* Attach the REAL backend outputs. Criteria were already measured
+             locally from the decoded samples (same conventions as the
+             backend), so only the AI block changes. */
           analysis.predictions = real.predictions;
           analysis.interpretation = deriveInterpretation({
             criteria: analysis.criteria,
             predictions: analysis.predictions,
           });
-          analysis.isDemoData = false;
+          analysis.awaitingBackend = false;
           analysis.notes =
             `Signal decoded in-browser from "${analysis.meta.sourceFile}". ` +
             "AI outputs produced by REAL backend inference (trained Perceptron + " +
@@ -288,8 +288,8 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
             "ai",
             "warning",
             apiConfigured()
-              ? "Backend gave no usable predictions — outputs marked SIMULATED"
-              : "FastAPI offline — outputs marked SIMULATED",
+              ? "Backend gave no usable predictions — no AI results recorded"
+              : "FastAPI offline — no AI results recorded",
           );
         }
         setProgress(100);
@@ -303,7 +303,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
             `${analysis.meta.code} — signal decoded from file; ` +
             (real && real.predictions.length === 2
               ? "real model inference (FastAPI)."
-              : "AI outputs simulated."),
+              : "voltage criteria only — backend offline."),
         });
       } catch (e) {
         const message =
@@ -347,7 +347,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
     };
   }, []);
 
-  const demoLibrary = analyses.filter((a) => a.meta.source === "demo-library");
+  const ptbxlLibrary = analyses.filter((a) => a.meta.source === "ptbxl-library");
 
   return (
     <div className="space-y-6">
@@ -356,11 +356,11 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
         <CardContent className="flex items-start gap-3 p-4">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden />
           <div className="text-sm">
-            <p className="font-semibold text-amber-900">Demo pipeline — real decoding, simulated AI</p>
+            <p className="font-semibold text-amber-900">Research pipeline — in-browser decoding, backend inference</p>
             <p className="mt-0.5 leading-relaxed text-amber-800">
               Uploaded recordings are decoded in-browser (CSV matrix or PhysioNet-style .dat/.hea)
-              and voltage criteria are measured from the actual samples. AI outputs stay simulated
-              until the FastAPI research backend is connected. No data leaves your browser.
+              and voltage criteria are measured from the actual samples. AI scores appear only once
+              the FastAPI research backend is connected. No data leaves your browser.
             </p>
           </div>
         </CardContent>
@@ -426,7 +426,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
               />
             </div>
 
-            {/* Patient context (demo inputs) */}
+            {/* Patient context (drives the sex-specific Cornell threshold) */}
             <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="upl-sex" className="text-xs text-muted-foreground">
@@ -457,7 +457,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                 />
               </div>
               <p className="text-[11px] leading-relaxed text-muted-foreground sm:col-span-2">
-                Demo metadata only — no personal data should be uploaded to a research
+                Used only for the sex-specific Cornell threshold — no personal data should be uploaded to a research
                 prototype. Use synthetic or fully anonymised files.
               </p>
             </div>
@@ -471,7 +471,6 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
               <span className="flex items-center gap-2">
                 <Activity className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Processing pipeline
               </span>
-              <DemoDataBadge />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -542,8 +541,13 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
               <CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden />
               Analysis ready — {result.meta.code}
               <SignalOriginBadge meta={result.meta} />
-              <DemoDataBadge>AI outputs simulated</DemoDataBadge>
-              <SimulatedTag />
+              {result.awaitingBackend ? (
+                <Badge variant="outline" className="border-slate-300 bg-slate-50 text-slate-700">
+                  Criteria only — backend offline
+                </Badge>
+              ) : (
+                <Badge className="bg-emerald-600">Backend inference</Badge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -590,18 +594,19 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
         </Card>
       )}
 
-      {/* Demo library shortcut */}
+      {/* PTB-XL library shortcut */}
       <div>
         <div className="mb-3 flex items-end justify-between">
           <div>
-            <h3 className="text-base font-semibold text-[#0b1728]">Or explore the demo library</h3>
+            <h3 className="text-base font-semibold text-[#0b1728]">Or explore the PTB-XL library</h3>
             <p className="text-sm text-muted-foreground">
-              Curated synthetic recordings — click a card to open it in the workspace.
+              Real test-fold recordings with their measured voltages — click a card to open
+              one in the workspace.
             </p>
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {demoLibrary.map((a) => (
+          {ptbxlLibrary.map((a) => (
             <Card
               key={a.id}
               className="cursor-pointer p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
@@ -617,7 +622,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                   onNavigate("visualization");
                 }
               }}
-              aria-label={`Open demo recording ${a.meta.code}`}
+              aria-label={`Open PTB-XL recording ${a.meta.code}`}
             >
               <div className="flex items-center justify-between">
                 <p className="font-mono text-xs font-bold text-[#0b1728]">{a.meta.code}</p>

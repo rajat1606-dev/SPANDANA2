@@ -1,6 +1,7 @@
 /**
- * Small statistics helpers used to draw illustrative ROC curves from
- * scalar AUC values (binormal model). Demo-only visualisation aid.
+ * Small statistics helpers that approximate a ROC curve shape from a scalar
+ * AUC (binormal model). Used only when the backend has not supplied the
+ * measured curve points; the AUC itself is always a measured value.
  */
 
 /** Abramowitz–Stegun 7.1.26 error function. */

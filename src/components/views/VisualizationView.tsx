@@ -37,7 +37,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
   if (!selected) {
     return (
       <Card className="p-10 text-center text-sm text-muted-foreground shadow-sm">
-        No recording available. Upload or select a demo recording first.
+        No recording available. Upload a recording or pick one from the PTB-XL library.
       </Card>
     );
   }
@@ -111,7 +111,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
               note={
                 decoded
                   ? "Display sweep auto-scaled · signal decoded from the uploaded file (real samples)"
-                  : "Display sweep 25 mm/s · auto-scaled gain (nominal 10 mm/mV) · synthetic signal"
+                  : "Display sweep 25 mm/s · auto-scaled gain (nominal 10 mm/mV) · rendered from measured voltages"
               }
             />
           </CardContent>
@@ -214,7 +214,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           description={
             decoded
               ? "Traces are rendered from the signal decoded in-browser from the uploaded recording (auto-scaled for display). Amplitudes are measured globally against the median baseline — a deliberately simple research measurement, not a clinical interpretation."
-              : "All traces are rendered from the deterministic demonstration generator at 500 Hz over 10 seconds. Uploaded recordings are decoded in-browser when a CSV matrix or PhysioNet-style .dat/.hea record is provided; research deployments can also render decoded waveforms returned by the FastAPI backend."
+              : "This trace is rendered at 500 Hz over 10 seconds from the recording’s measured QRS voltages — PTB-XL’s raw signal archive is not bundled with this build, so the morphology is illustrative while the voltages driving both criteria are the dataset’s own. Uploaded recordings are decoded in-browser from a CSV matrix or PhysioNet-style .dat/.hea record and show real samples."
           }
         />
       </div>

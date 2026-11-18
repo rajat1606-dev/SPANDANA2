@@ -120,11 +120,11 @@ export function SidebarContent({
             <FlaskConical className="h-3.5 w-3.5" aria-hidden /> Research prototype
           </p>
           <p className="mt-1 text-[10.5px] leading-relaxed text-[#9fb2c8]">
-            Academic demo — not a certified medical device. All values are simulated.
+            Academic research prototype — not a certified medical device.
           </p>
         </div>
         <p className="mt-3 text-center text-[10px] text-[#5c7189]">
-          SPANDANA v0.1.0 · Demo build
+          SPANDANA v0.1.0 · Research prototype
         </p>
       </div>
     </div>

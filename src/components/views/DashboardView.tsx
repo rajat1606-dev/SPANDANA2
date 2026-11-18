@@ -29,10 +29,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatCard, SectionHeading } from "@/components/shared/StatCard";
-import { VerdictBadge, DemoDataBadge } from "@/components/shared/badges";
+import { VerdictBadge } from "@/components/shared/badges";
 import { LeadSparkline } from "@/components/ecg/EcgGrid";
 import { useAnalysesStore, type ViewId } from "@/store/analyses";
-import { MODEL_METRICS, SCREENING_TREND } from "@/lib/demo-data";
+import {
+  CNN_HEADLINE,
+  CNN_TRAINING_HISTORY,
+  DATASET_STATS,
+  MODEL_METRICS,
+} from "@/lib/real-data";
 import { formatDistanceToNow } from "date-fns";
 
 const DONUT_COLORS = ["#0b1728", "#1d6fbe", "#089fbf", "#b45309"];
@@ -41,14 +46,10 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
   const analyses = useAnalysesStore((s) => s.analyses);
   const selectAnalysis = useAnalysesStore((s) => s.selectAnalysis);
 
-  const cohortTotal = useMemo(
-    () => SCREENING_TREND.reduce((acc, d) => acc + d.analyses, 0),
-    [],
-  );
-  const cohortPositive = useMemo(
-    () => SCREENING_TREND.reduce((acc, d) => acc + d.positive, 0),
-    [],
-  );
+  const testLvhPct = (
+    (DATASET_STATS.test.lvh / DATASET_STATS.test.total) *
+    100
+  ).toFixed(1);
 
   const outcomeSplit = useMemo(() => {
     const counts = { positive: 0, negative: 0, discordant: 0 };
@@ -87,7 +88,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <div className="max-w-2xl">
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="border-cyan-400/40 bg-cyan-400/10 text-cyan-300">
-                <FlaskConical className="h-3 w-3" aria-hidden /> Research prototype · demo mode
+                <FlaskConical className="h-3 w-3" aria-hidden /> Research prototype · PTB-XL results
               </Badge>
               <Badge variant="outline" className="hidden border-white/20 bg-white/5 text-white/80 sm:inline-flex">
                 PTB-XL based workflow
@@ -98,9 +99,9 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
             </h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#b9c8da]">
               SPANDANA compares classic voltage criteria (Sokolow–Lyon, Cornell) with
-              Perceptron and CNN models on 10-second recordings. Every figure in this
-              build is clearly-labelled demonstration data — connect the FastAPI
-              research backend to run real inference.
+              Perceptron and CNN models on 10-second recordings. Every figure below is
+              measured on PTB-XL — connect the FastAPI research backend to score your
+              own recordings.
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Button
@@ -140,29 +141,29 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           icon={ScanHeart}
-          label="ECG analyses (30-day cohort)"
-          value={String(cohortTotal)}
-          sub="Demonstration statistics"
+          label="PTB-XL recordings analysed"
+          value={DATASET_STATS.totalUsed.toLocaleString()}
+          sub={`${DATASET_STATS.excludedLowCertainty.toLocaleString()} low-certainty labels excluded`}
           tone="blue"
         />
         <StatCard
           icon={HeartPulse}
-          label="LVH patterns flagged"
-          value={`${cohortPositive} (${((cohortPositive / cohortTotal) * 100).toFixed(1)}%)`}
-          sub="Voltage criteria or simulated AI positive"
+          label="LVH in held-out test fold"
+          value={`${DATASET_STATS.test.lvh} (${testLvhPct}%)`}
+          sub={`Of ${DATASET_STATS.test.total.toLocaleString()} recordings, cardiologist-confirmed`}
           tone="amber"
         />
         <StatCard
           icon={Activity}
-          label="Recordings in workspace"
-          value={String(analyses.length)}
-          sub="Demo library + your uploads"
+          label="CNN detections on test fold"
+          value={`${CNN_HEADLINE.caught}/${CNN_HEADLINE.ofPositives}`}
+          sub={`${CNN_HEADLINE.falseAlarms} false alarms of ${CNN_HEADLINE.ofControls.toLocaleString()} controls`}
           tone="navy"
         />
         <StatCard
           icon={Gauge}
           label="Best ROC-AUC (PTB-XL test)"
-          value="0.98"
+          value={CNN_HEADLINE.rocAuc.toFixed(2)}
           sub="CNN · measured on PTB-XL test set"
           tone="cyan"
         />
@@ -173,13 +174,12 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         <Card className="shadow-sm xl:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
-              <span>Screening activity — last 14 days</span>
-              <DemoDataBadge />
+              <span>CNN training history — validation (21 epochs)</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={SCREENING_TREND} margin={{ top: 8, right: 12, left: -18, bottom: 0 }}>
+              <AreaChart data={CNN_TRAINING_HISTORY} margin={{ top: 8, right: 12, left: -18, bottom: 0 }}>
                 <defs>
                   <linearGradient id="spAreaBlue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#1d6fbe" stopOpacity={0.28} />
@@ -191,14 +191,14 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={{ stroke: "#dfe6ef" }} interval="preserveStartEnd" />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="epoch" tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={{ stroke: "#dfe6ef" }} interval="preserveStartEnd" />
+                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }}
                   labelStyle={{ fontWeight: 600, color: "#0b1728" }}
                 />
-                <Area type="monotone" dataKey="analyses" name="Analyses" stroke="#1d6fbe" strokeWidth={2} fill="url(#spAreaBlue)" />
-                <Area type="monotone" dataKey="positive" name="Flagged positive" stroke="#089fbf" strokeWidth={2} fill="url(#spAreaCyan)" />
+                <Area type="monotone" dataKey="valAuroc" name="Validation ROC-AUC" stroke="#1d6fbe" strokeWidth={2} fill="url(#spAreaBlue)" />
+                <Area type="monotone" dataKey="valAuprc" name="Validation PR-AUC" stroke="#089fbf" strokeWidth={2} fill="url(#spAreaCyan)" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -208,7 +208,6 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
               <span>Workspace outcomes</span>
-              <DemoDataBadge />
             </CardTitle>
           </CardHeader>
           <CardContent className="flex h-[260px] flex-col">

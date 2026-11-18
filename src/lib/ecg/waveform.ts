@@ -1,5 +1,7 @@
 /**
- * Synthetic 12-lead ECG waveform generator (research demonstration only).
+ * 12-lead ECG trace renderer. Draws a physiologically-shaped waveform from
+ * target QRS voltages; used to display PTB-XL recordings whose raw samples
+ * are not bundled. Criteria read the measured voltages, not this drawing.
  *
  * Produces deterministic, physiologically-shaped 10-second recordings:
  * P wave, QRS complex (Q / R / S), T wave and a small U wave are modelled
@@ -195,7 +197,7 @@ function measureAmplitudes(
  *  - `spec.parsed` present → the REAL decoded recording is used as-is
  *    (amplitudes were measured at the full original rate; beats are
  *    re-detected on the stored samples for the display counters).
- *  - otherwise → deterministic synthetic demonstration generator.
+ *  - otherwise → deterministic renderer driven by the spec’s voltages.
  */
 export function generateWaveform(spec: WaveformSpec): EcgWaveform {
   if (spec.parsed) {
@@ -212,7 +214,14 @@ export function generateWaveform(spec: WaveformSpec): EcgWaveform {
     // Clone the rng stream so lead order never affects the noise pattern.
     const leadRng = mulberry32(`${spec.seed}::${lead}`);
     leads[lead] = leadSamples(spec.profile[lead], beats, leadRng, idx * 0.9);
-    amplitudes[lead] = measureAmplitudes(leads[lead], beats);
+    // A rendered trace only approximates the target voltages, so a spec may
+    // carry authoritative measured amplitudes (real PTB-XL recordings). Only
+    // the component the dataset actually measured is overridden.
+    const drawn = measureAmplitudes(leads[lead], beats);
+    const real = spec.measured?.[lead];
+    amplitudes[lead] = real
+      ? { r: real.r ?? drawn.r, s: real.s ?? drawn.s }
+      : drawn;
   });
 
   return {

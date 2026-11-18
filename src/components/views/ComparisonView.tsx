@@ -38,8 +38,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DemoDataBadge } from "@/components/shared/badges";
-import { MODEL_METRICS } from "@/lib/demo-data";
+import { ApproximationBadge } from "@/components/shared/badges";
+import { MODEL_METRICS } from "@/lib/real-data";
 import { rocCurveFromAuc } from "@/lib/stats";
 import { fetchModelMetrics, type BackendModelMetric } from "@/lib/api";
 
@@ -306,7 +306,7 @@ export function ComparisonView() {
               {realCurves ? (
                 <Badge className="bg-emerald-600">REAL</Badge>
               ) : (
-                <DemoDataBadge>Curve shape approximated</DemoDataBadge>
+                <ApproximationBadge>Curve shape approximated</ApproximationBadge>
               )}
             </CardTitle>
           </CardHeader>

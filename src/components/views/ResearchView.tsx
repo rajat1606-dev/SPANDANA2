@@ -19,7 +19,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/shared/StatCard";
-import { DemoDataBadge } from "@/components/shared/badges";
 import type { ViewId } from "@/store/analyses";
 
 const PIPELINE = [
@@ -192,7 +191,9 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
               including a hypertrophy annotation superclass for model training and evaluation.
             </p>
             <p className="text-[11.5px] text-muted-foreground">
-              The demo build ships synthetic waveforms only; no PTB-XL records are bundled.
+              This build bundles the measured voltages, labels and metrics for a small
+              set of PTB-XL test-fold recordings; the raw ~1.8 GB signal archive is not
+              included, so displayed traces are rendered from those voltages.
             </p>
           </CardContent>
         </Card>
@@ -218,8 +219,8 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
               <li>Strength: fully interpretable weights — see the AI Screening module</li>
             </ul>
             <p className="text-[11.5px] text-muted-foreground">
-              The demo interface visualises fixed illustrative weights; trained parameters arrive
-              with the research backend.
+              Trained weights live with the research backend; connect it to see the real
+              per-feature contributions in the AI Screening module.
             </p>
           </CardContent>
         </Card>
@@ -243,7 +244,8 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
               ))}
             </ol>
             <p className="text-[11.5px] text-muted-foreground">
-              Architecture description of the research design — no weights are executed in the demo build.
+              Architecture description of the research design — the trained CNN runs in the
+              FastAPI backend, not in the browser.
             </p>
           </CardContent>
         </Card>
@@ -254,7 +256,7 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         <SectionHeading
           icon={ShieldAlert}
           title="Limitations & ethical considerations"
-          description="Read this before drawing any conclusion from the demo."
+          description="Read this before drawing any conclusion from these results."
         />
         <Card className="border-amber-200 bg-amber-50/50 shadow-sm">
           <CardContent className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
@@ -268,8 +270,8 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
                 d: "Voltage criteria miss a large fraction of echo-confirmed LVH; a negative screen never excludes disease.",
               },
               {
-                t: "Simulated demo data",
-                d: "Waveforms, probabilities and metrics in this build are synthetic or illustrative placeholders, clearly labelled throughout.",
+                t: "Rendered waveforms",
+                d: "Library voltages, labels and metrics are the measured PTB-XL values, but the drawn 12-lead trace is rendered from those voltages — PTB-XL’s raw signal archive is not bundled with this repository.",
               },
               {
                 t: "Dataset shift & bias",
@@ -330,12 +332,11 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
                 <button className="font-medium text-[#1d6fbe] hover:underline" onClick={() => onNavigate("upload")}>
                   ECG Analysis
                 </button>{" "}
-                module to explore the pipeline with demo recordings.
+                module to explore the pipeline with the PTB-XL library or your own recordings.
               </p>
               <Badge variant="outline" className="ml-auto bg-white">
                 <BookOpen className="mr-1 h-3 w-3" aria-hidden /> Module 8
               </Badge>
-              <DemoDataBadge />
             </div>
           </CardContent>
         </Card>
