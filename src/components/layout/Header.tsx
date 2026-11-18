@@ -23,7 +23,7 @@ function BackendChip({ status }: { status: BackendStatus | null }) {
       title={
         connected
           ? "FastAPI research backend reachable — real inference will be used."
-          : "FastAPI backend not connected. SPANDANA is running in demo mode with simulated outputs."
+          : "FastAPI backend not connected. Voltage criteria still work; model predictions are unavailable."
       }
     >
       <span
@@ -33,7 +33,7 @@ function BackendChip({ status }: { status: BackendStatus | null }) {
         )}
         aria-hidden
       />
-      {connected ? "FastAPI connected" : "FastAPI offline · demo mode"}
+      {connected ? "FastAPI connected" : "FastAPI offline · criteria only"}
     </span>
   );
 }

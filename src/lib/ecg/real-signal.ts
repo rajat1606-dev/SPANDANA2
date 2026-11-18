@@ -14,8 +14,8 @@
  *    criteria amplitudes are measured at the FULL original rate and stored
  *    alongside so results never drift between sessions.
  *
- * This module never produces model predictions — AI outputs stay in the
- * clearly-labelled demo simulator / FastAPI backend path.
+ * This module never produces model predictions — AI outputs come solely
+ * from the FastAPI backend.
  */
 
 import type { EcgWaveform, LeadAmplitudes, LeadName, ParsedSpecData } from "./types";

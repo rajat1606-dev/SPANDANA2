@@ -27,7 +27,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { AnalysisMetaRow, AnalysisSelector } from "@/components/shared/AnalysisSelector";
-import { CriterionPill, DemoDataBadge, SignalOriginBadge } from "@/components/shared/badges";
+import { CriterionPill, SignalOriginBadge } from "@/components/shared/badges";
 import { useAnalysesStore, useSelectedAnalysis } from "@/store/analyses";
 import { criterionExplanations } from "@/lib/ecg/criteria";
 
@@ -38,7 +38,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
   if (!selected) {
     return (
       <Card className="p-10 text-center text-sm text-muted-foreground shadow-sm">
-        No recording available. Upload or select a demo recording first.
+        No recording available. Upload a recording or pick one from the PTB-XL library.
       </Card>
     );
   }
@@ -85,7 +85,9 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
           analyses={analyses}
           onChange={(id) => useAnalysesStore.getState().selectAnalysis(id)}
         />
-        <DemoDataBadge>AI outputs simulated</DemoDataBadge>
+        <Badge variant="outline" className="border-sky-300 bg-sky-50 font-medium text-sky-800">
+          Measured voltages
+        </Badge>
       </div>
 
       <AnalysisMetaRow analysis={selected} />
@@ -245,7 +247,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
             <p className="rounded-md bg-[#f8fafd] p-2.5 text-[11.5px]">
               {decoded
                 ? "Values derive from the real uploaded signal — research measurements, not clinical interpretations."
-                : "Demo mode: values are measured from the synthetic signal, so they are internally consistent but not clinically meaningful."}
+                : "Values are this PTB-XL recording’s own measured voltages — research measurements, not clinical interpretations."}
             </p>
           </CardContent>
         </Card>

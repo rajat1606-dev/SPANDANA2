@@ -1,10 +1,11 @@
 /**
- * Sanity check: run the synthetic waveform generator + criteria engine
- * and print measured values for the three curated demo cases.
+ * Sanity check: run the waveform renderer + criteria engine and print the
+ * measured values for the three real PTB-XL library recordings. The printed
+ * sums must match data/metadata/feature_rows.csv for those ecg_ids.
  */
-import { createDemoAnalyses } from "../src/lib/demo-data";
+import { createLibraryAnalyses } from "../src/lib/case-library";
 
-const demos = createDemoAnalyses();
+const demos = createLibraryAnalyses();
 for (const a of demos) {
   const sl = a.criteria.sokolowLyon;
   const co = a.criteria.cornell;
@@ -20,9 +21,13 @@ for (const a of demos) {
   console.log(
     `  Agreement=${a.criteria.agreement} Interpretation=${a.interpretation}`,
   );
-  console.log(
-    `  Perceptron=${a.predictions[0].probability} (${a.predictions[0].positive}) CNN=${a.predictions[1].probability} (${a.predictions[1].positive})`,
-  );
+  if (a.predictions.length === 0) {
+    console.log("  Models: awaiting FastAPI backend (no local inference)");
+  } else {
+    for (const p of a.predictions) {
+      console.log(`  ${p.model}=${p.probability} (${p.positive})`);
+    }
+  }
   console.log(
     `  Samples/lead=${a.waveform.leads["II"].length} beats=${a.waveform.beats.length}`,
   );

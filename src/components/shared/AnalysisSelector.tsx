@@ -72,7 +72,7 @@ export function AnalysisMetaRow({ analysis }: { analysis: EcgAnalysis }) {
       ? "Heart rate detected from the decoded signal with a fixed-threshold R-peak detector."
       : analysis.waveform.hrSource === "unavailable"
         ? "No reliable R-peak detection on this recording — heart rate is not displayed rather than invented."
-        : "Configured heart rate of the synthetic demonstration generator.";
+        : "Nominal heart rate used to render the trace from the measured voltages.";
 
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs">

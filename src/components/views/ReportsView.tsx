@@ -11,10 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalysisSelector } from "@/components/shared/AnalysisSelector";
-import { DemoDataBadge, SimulatedTag } from "@/components/shared/badges";
 import { EcgGrid } from "@/components/ecg/EcgGrid";
 import { useAnalysesStore, useSelectedAnalysis } from "@/store/analyses";
-import { MODEL_METRICS } from "@/lib/demo-data";
+import { MODEL_METRICS } from "@/lib/real-data";
 import { format } from "date-fns";
 
 export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void }) {
@@ -24,7 +23,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
   if (!selected) {
     return (
       <Card className="p-10 text-center text-sm text-muted-foreground shadow-sm">
-        No recording available. Upload or select a demo recording first.
+        No recording available. Upload a recording or pick one from the PTB-XL library.
       </Card>
     );
   }
@@ -84,10 +83,12 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
             <div className="text-right">
               <p className="text-sm font-bold text-[#0b1728]">ECG LVH Screening Report</p>
               <p className="text-[11px] text-muted-foreground">
-                Research demonstration · {format(new Date(selected.createdAt), "dd MMM yyyy · HH:mm")}
+                Research report · recorded {format(new Date(selected.createdAt), "dd MMM yyyy")}
               </p>
               <div className="mt-1.5 flex justify-end">
-                <DemoDataBadge>Simulated research document</DemoDataBadge>
+                <Badge variant="outline" className="border-sky-300 bg-sky-50 font-medium text-sky-800">
+                  Research prototype — not a clinical document
+                </Badge>
               </div>
             </div>
           </div>
@@ -108,8 +109,8 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                   "Source",
                   decoded
                     ? `Decoded in-browser: ${selected.meta.sourceFile ?? "file"}`
-                    : selected.meta.source === "demo-library"
-                      ? "Curated demo library"
+                    : selected.meta.source === "ptbxl-library"
+                      ? "PTB-XL library (measured voltages)"
                       : `Upload: ${selected.meta.sourceFile ?? "file"}`,
                 ],
               ].map(([k, v]) => (
@@ -131,14 +132,14 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                 note={
                   decoded
                     ? "Signal decoded in-browser from the uploaded recording · auto-scaled display"
-                    : "Synthetic demonstration signal · auto-scaled display"
+                    : "Trace rendered from the recording’s measured voltages · auto-scaled display"
                 }
               />
             </div>
             <p className="mt-1.5 text-[10.5px] text-muted-foreground">
               {decoded
-                ? "Real decoded samples · voltage criteria measured from the decoded signal · AI outputs simulated."
-                : "Synthetic demonstration signal · voltage criteria measured from the simulated trace · AI outputs simulated."}
+                ? "Real decoded samples · voltage criteria measured from the decoded signal."
+                : "PTB-XL recording · voltage criteria are the dataset’s measured values; the trace is rendered from them."}
             </p>
           </section>
 
@@ -195,8 +196,15 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
           <section className="print-break mt-7">
             <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">
               4 · AI screening results
-              {selected.predictions.every((p) => p.simulated) && <SimulatedTag />}
             </h3>
+            {selected.predictions.length === 0 ? (
+              <p className="mt-3 rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4 text-[12px] leading-relaxed text-muted-foreground">
+                No model output for this recording. Perceptron and CNN scores are
+                produced only by the FastAPI research backend; start it and re-run
+                the analysis to include them in this report. The voltage criteria
+                above were measured directly from the recording.
+              </p>
+            ) : (
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {[
                 { p: perceptron, arch: "Linear model · 12 voltage features" },
@@ -219,12 +227,13 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                     />
                   </div>
                   <p className="mt-2 text-[11px] text-muted-foreground">
-                    {p.positive ? "Above" : "Below"} 0.50 threshold · {p.latencyMs} ms ·{" "}
-                    {p.simulated ? "simulated value" : "backend inference"}
+                    {p.positive ? "Above" : "Below"} 0.50 threshold · {p.latencyMs} ms ·
+                    backend inference
                   </p>
                 </div>
               ))}
             </div>
+            )}
           </section>
 
           {/* Model comparison snapshot */}
@@ -259,7 +268,8 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
               </table>
             </div>
             <p className="mt-1.5 text-[10.5px] text-muted-foreground">
-              Illustrative interface values — not measurements produced by SPANDANA.
+              Measured on the PTB-XL test fold (strat_fold 10); thresholds tuned on
+              validation fold 9.
             </p>
           </section>
 
@@ -279,8 +289,9 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                   <strong>Disclaimer.</strong> This report was generated by SPANDANA, an academic
                   research prototype. It is not a certified medical diagnostic system and must not
                   be used for clinical decision-making. It does not replace ECG interpretation by a
-                  qualified clinician, echocardiography or professional medical judgment. All
-                  findings herein are simulated demonstration values.
+                  qualified clinician, echocardiography or professional medical judgment. The
+                  LVH labels shown are cardiologist SCP statements from PTB-XL, not
+                  echocardiographic confirmation.
                 </p>
               </div>
             </div>
@@ -289,7 +300,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
           {/* Footer */}
           <div className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-[#dfe6ef] pt-4 text-[10.5px] text-muted-foreground">
             <span>
-              SPANDANA v0.1.0 · Demo build · Generated {format(new Date(), "dd MMM yyyy, HH:mm")}
+              SPANDANA v0.1.0 · Research prototype · Generated {format(new Date(), "dd MMM yyyy, HH:mm")}
             </span>
             <Badge variant="outline" className="bg-white text-[10px]">
               Research use only — not a medical device

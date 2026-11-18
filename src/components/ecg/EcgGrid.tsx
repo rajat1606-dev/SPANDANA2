@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * EcgGrid — classic 12-lead ECG rendering on simulated ECG paper.
+ * EcgGrid — classic 12-lead ECG rendering on standard ECG graph paper.
  * Waveforms are drawn as SVG polylines over a CSS millimetre-grid;
  * the vertical gain is auto-scaled (labelled) and the decimation keeps
  * QRS peaks crisp while staying DOM-friendly.
@@ -103,7 +103,7 @@ export function EcgGrid({
       {(showScaleNote || note) && (
         <p className="mt-2 text-right text-[11px] text-muted-foreground">
           {note ??
-            "Display sweep 25 mm/s · auto-scaled gain (nominal 10 mm/mV) · synthetic signal"}
+            "Display sweep 25 mm/s · auto-scaled gain (nominal 10 mm/mV) · rendered from measured voltages"}
         </p>
       )}
     </div>
