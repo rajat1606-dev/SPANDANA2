@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "SPANDANA – AI Cardiac Intelligence",
   description:
-    "See Beyond the Heartbeat. An academic research prototype screening 10-second, 12-lead ECG recordings for Left Ventricular Hypertrophy (LVH) — comparing traditional voltage criteria (Sokolow-Lyon, Cornell) with Perceptron and CNN models. Not a medical device.",
+    "See Beyond the Heartbeat. Screening 10-second, 12-lead ECG recordings for Left Ventricular Hypertrophy (LVH) — comparing traditional voltage criteria (Sokolow-Lyon, Cornell) with Perceptron and CNN models. Not a medical device.",
   keywords: [
     "SPANDANA",
     "ECG",
