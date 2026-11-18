@@ -52,6 +52,26 @@ function regenerate(a: EcgAnalysis): EcgAnalysis {
   };
 }
 
+/**
+ * Storage keys this app has used. Anything other than the current key is
+ * dead weight: zustand never reads it again, but it keeps occupying the
+ * origin's localStorage budget and makes QuotaExceededError on the live
+ * key more likely, so it is removed once on startup.
+ */
+const STORAGE_KEY = "spandana-analyses-v2";
+const LEGACY_STORAGE_KEYS = ["spandana-analyses-v1"];
+
+function dropLegacyStorage(): void {
+  if (typeof window === "undefined") return;
+  for (const key of LEGACY_STORAGE_KEYS) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* storage unavailable — nothing to reclaim */
+    }
+  }
+}
+
 /** Newest decoded uploads kept in localStorage (analyses are newest-first). */
 const MAX_PERSISTED_DECODED = 6;
 
@@ -160,6 +180,7 @@ export const useAnalysesStore = create<AnalysesState>()(
         set((s) => ({ analyses: [a, ...s.analyses], selectedId: a.id })),
       /** Seed the real PTB-XL case library when it is not present. */
       ensureLibrary: () => {
+        dropLegacyStorage();
         const current = get().analyses;
         if (!current.some((a) => a.id.startsWith("ptbxl-"))) {
           const stale = current.filter((a) => !a.id.startsWith("demo-"));
@@ -175,8 +196,9 @@ export const useAnalysesStore = create<AnalysesState>()(
     }),
     {
       // v2: the demo library and the local prediction simulator were removed;
-      // bumping the key drops any persisted "demo-" analyses from v1.
-      name: "spandana-analyses-v2",
+      // bumping the key drops any persisted "demo-" analyses from v1, and
+      // dropLegacyStorage() reclaims the space the v1 entry still occupied.
+      name: STORAGE_KEY,
       storage: createJSONStorage(() => quotaSafeLocalStorage),
       partialize: (state) => ({
         // Decoded recordings carry up to ~250 KB of samples each — keep only
