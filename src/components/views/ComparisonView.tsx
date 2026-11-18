@@ -5,11 +5,13 @@
  * accuracy, precision, sensitivity, specificity, F1-score, ROC-AUC (and
  * PR-AUC when provided).
  *
- * When the FastAPI backend is reachable the REAL evaluation metrics
- * (PTB-XL, patient-wise test fold 10) are fetched from
- * GET /api/v1/models/metrics and every table/chart switches to them with
- * a green badge. Otherwise the clearly-labelled illustrative demo dataset
- * is shown.
+ * When the FastAPI backend is reachable the evaluation metrics (PTB-XL,
+ * patient-wise test fold 10) are fetched live from
+ * GET /api/v1/models/metrics, together with the measured ROC/PR curves.
+ * Otherwise the table falls back to the SAME measured results bundled with
+ * this build (MODEL_METRICS, copied from backend/models/metrics.json) — the
+ * numbers are real either way; only the ROC curve shapes are then
+ * approximated from the measured AUCs.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -190,7 +192,12 @@ export function ComparisonView() {
                 Real evaluation — PTB-XL test fold 10
               </Badge>
             ) : (
-              <DemoDataBadge>Illustrative values — not measured by SPANDANA</DemoDataBadge>
+              <Badge
+                variant="outline"
+                className="gap-1 border-sky-300 bg-sky-50 font-medium text-sky-800"
+              >
+                Measured — PTB-XL test fold 10 (bundled snapshot)
+              </Badge>
             )}
           </CardTitle>
         </CardHeader>
@@ -249,9 +256,12 @@ export function ComparisonView() {
               </>
             ) : (
               <>
-                Published studies report ECG voltage-criteria sensitivity of roughly
-                10–50% against echocardiographic LVH with high specificity; the values
-                here follow that pattern as illustrative placeholders.
+                Values are the measured SPANDANA results bundled with this build
+                (<code className="rounded bg-[#f1f5fa] px-1 font-mono">backend/models/metrics.json</code>):
+                patient-wise test split (strat_fold 10) of PTB-XL v1.0.3, thresholds
+                tuned on validation fold 9 only. Labels are SCP ECG statements, not
+                echo-confirmed diagnoses. Connect the backend to serve them live,
+                with measured ROC curves and PR-AUC.
               </>
             )}{" "}
             Source: <code className="rounded bg-[#f1f5fa] px-1 font-mono">GET /api/v1/models/metrics</code>.
@@ -289,9 +299,15 @@ export function ComparisonView() {
             <CardTitle className="flex items-center justify-between text-base">
               <span className="flex items-center gap-2">
                 <LineChartIcon className="h-5 w-5 text-[#1d6fbe]" aria-hidden />{" "}
-                {realCurves ? "ROC curves (measured — test fold 10)" : "ROC curves (binormal, from AUC)"}
+                {realCurves
+                  ? "ROC curves (measured — test fold 10)"
+                  : "ROC curves (binormal, approximated from measured AUC)"}
               </span>
-              {realCurves ? <Badge className="bg-emerald-600">REAL</Badge> : <DemoDataBadge />}
+              {realCurves ? (
+                <Badge className="bg-emerald-600">REAL</Badge>
+              ) : (
+                <DemoDataBadge>Curve shape approximated</DemoDataBadge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[340px]">
@@ -379,9 +395,9 @@ export function ComparisonView() {
             ) : (
               <>
                 <p>
-                  This module currently reads from the local demo dataset
-                  {fetchError ? ` (${fetchError})` : ""}. To publish real validation
-                  results from your research pipeline:
+                  The table above uses the measured results bundled with this build
+                  {fetchError ? ` (${fetchError})` : ""}. Connect the FastAPI backend
+                  to serve them live, along with measured ROC curves and PR-AUC:
                 </p>
                 <ol className="ml-4 list-decimal space-y-1.5 text-[12.5px]">
                   <li>
@@ -397,8 +413,8 @@ export function ComparisonView() {
                   </li>
                 </ol>
                 <p className="rounded-md bg-white p-2.5 text-[11.5px]">
-                  Until then, every number on this page is an interface placeholder and is
-                  labelled as such.
+                  Until then the metrics shown are the committed snapshot of the real
+                  evaluation; only the ROC curve shapes on this page are approximated.
                 </p>
               </>
             )}
