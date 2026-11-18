@@ -7,19 +7,52 @@ Every value written here is read from a file in the repository:
   data/cnn_runs/history.json             - real CNN training history
   backend/models/metrics.json            - real test-set metrics
 
-IMPORTANT: the committed CSVs were produced before the sex-coding fix
-(commit "Fix reversed sex coding"), which mapped 0->female, 1->male. The
-correct PTB-XL coding is 0=male, 1=female, so every stored sex string is
-inverted and is flipped here. Verified empirically: the stored "female"
-share is 52.1%, matching PTB-XL's published ~52% MALE share.
+SEX CONVENTION: extract_lvh.py originally mapped PTB-XL's sex code 0 to
+"female", the inverse of the documented 0 = male, so CSVs written before
+that fix carry inverted sex strings. This script does NOT hardcode a
+correction - that would itself invert correct data once the pipeline is
+re-run with the fixed mapping. Instead it detects which convention the
+file was written with, using PTB-XL's published ~52% male cohort share,
+and refuses to guess when the split is too close to even to tell.
 """
 import csv, io, json, os, collections
 
 ROOT = os.getcwd()
 P = lambda *a: os.path.join(ROOT, *a)
 
-FLIP = {"male": "Female", "female": "Male"}   # flip + title-case for the Sex type
+TITLE = {"male": "Male", "female": "Female"}  # file already correct
+FLIP = {"male": "Female", "female": "Male"}   # file written with the old mapping
+
+# PTB-XL's cohort is ~52% male, i.e. ~2 points off an even split. A stored
+# male share below 0.5 therefore means the file labels the majority sex
+# "female" and is inverted. Refuse to decide inside this band.
+AMBIGUOUS_BAND = 0.01
+
 CORNELL_TH = {"Male": 2.8, "Female": 2.0}
+
+
+def detect_sex_map(rows):
+    """Pick the stored-sex -> true-sex mapping this CSV needs.
+
+    Returns (mapping, male_share, inverted). Raises rather than guessing
+    when the cohort is too close to 50/50 to distinguish the conventions.
+    """
+    counts = collections.Counter(
+        r["sex"] for r in rows if r["sex"] in ("male", "female"))
+    male, female = counts["male"], counts["female"]
+    total = male + female
+    if total == 0:
+        raise SystemExit("gen_real_data: no usable sex values in feature_rows.csv")
+    male_share = male / total
+    if abs(male_share - 0.5) < AMBIGUOUS_BAND:
+        raise SystemExit(
+            "gen_real_data: cannot determine the sex convention - stored male "
+            "share is %.4f, within %.2f of an even split, so a correctly "
+            "written file is indistinguishable from an inverted one. Check "
+            "training/extract_lvh.py and set the mapping explicitly."
+            % (male_share, AMBIGUOUS_BAND))
+    inverted = male_share < 0.5
+    return (FLIP if inverted else TITLE), male_share, inverted
 SL_TH = 3.5
 
 CASE_IDS = ["9869", "8963", "21325"]
@@ -33,6 +66,18 @@ COHORT_LABEL = {"LVH_positive": "lvh-positive", "control": "lvh-negative"}
 feat = {r["ecg_id"]: r for r in csv.DictReader(io.open(P("data/metadata/feature_rows.csv"), encoding="utf-8"))}
 meta = {r["ecg_id"]: r for r in csv.DictReader(io.open(P("data/metadata/spandana_lvh_metadata.csv"), encoding="utf-8"))}
 
+SEX_MAP, MALE_SHARE, INVERTED = detect_sex_map(list(feat.values()))
+NL = chr(10)
+SEX_NOTE = NL.join([
+    " * Sex convention: the source CSV stores a male share of %.4f. PTB-XL's"
+    % MALE_SHARE,
+    " * cohort is ~52%% male, so this file was written with the %s"
+    % ("pre-fix (inverted)" if INVERTED else "corrected (0 = male)"),
+    " * mapping and the sexes below are %s."
+    % ("flipped from the stored value" if INVERTED else "taken as stored"),
+    "",
+])
+
 def esc(s):
     return s.replace("\\", "\\\\").replace('"', '\\"')
 
@@ -42,7 +87,7 @@ def num(x, nd=4):
 cases = []
 for eid in CASE_IDS:
     r, m = feat[eid], meta[eid]
-    sex = FLIP[r["sex"]]
+    sex = SEX_MAP[r["sex"]]
     th = CORNELL_TH[sex]
     sl = num(r["sokolow_lyon_sum"], 3)
     co = num(r["cornell_sum"], 3)
@@ -100,12 +145,7 @@ w('''/**
  *   data/cnn_runs/history.json              CNN training history
  *   backend/models/metrics.json             test-set metrics (strat_fold 10)
  *
- * Sex correction: the committed CSVs were written before the sex-coding fix
- * and use PTB-XL's mapping inverted (0 -> female). The correct coding is
- * 0 = male, 1 = female, so every sex below is flipped from the stored value.
- * Confirmed empirically: the stored "female" share is 52.1%, which matches
- * PTB-XL's published ~52% MALE share.
- */
+__SEX_NOTE__ */
 
 import type { CohortLabel, Sex } from "@/lib/ecg/types";
 
@@ -139,7 +179,7 @@ export interface PtbxlCase {
  * case. Voltages, ages, sexes and labels are the measured/recorded values.
  */
 export const PTBXL_CASES: PtbxlCase[] = [
-''')
+'''.replace("__SEX_NOTE__", SEX_NOTE))
 for c in cases:
     w("  {\n")
     w('    ecgId: %d,\n' % c["ecgId"])
@@ -226,6 +266,8 @@ for m in metrics:
 w("];\n")
 
 io.open(P("src/lib/real-data.ts"), "w", encoding="utf-8", newline="\n").write(out.getvalue())
+print("sex convention: stored male share %.4f -> %s"
+      % (MALE_SHARE, "INVERTED, flipping" if INVERTED else "correct, taking as stored"))
 print("wrote src/lib/real-data.ts (%d bytes)" % len(out.getvalue()))
 print("cases:", ", ".join("ecg %d %s %d %s" % (c["ecgId"], c["sex"], c["age"], c["label"]) for c in cases))
 print("CNN headline: %d/%d caught, %d false alarms, AUC %s" % (caught, test_lvh, false_alarms, cnn["roc_auc"]))
