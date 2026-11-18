@@ -281,7 +281,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
           analysis.notes =
             `Signal decoded in-browser from "${analysis.meta.sourceFile}". ` +
             "AI outputs produced by REAL backend inference (trained Perceptron + " +
-            "CNN, PTB-XL research models). Academic prototype — not a medical device.";
+            "CNN, PTB-XL models). Not a medical device.";
           setStep("ai", "done", "Real model inference received from FastAPI backend");
         } else {
           setStep(
@@ -457,8 +457,8 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                 />
               </div>
               <p className="text-[11px] leading-relaxed text-muted-foreground sm:col-span-2">
-                Used only for the sex-specific Cornell threshold — no personal data should be uploaded to a research
-                prototype. Use synthetic or fully anonymised files.
+                Used only for the sex-specific Cornell threshold. Do not upload personal
+                data — use synthetic or fully anonymised files.
               </p>
             </div>
           </CardContent>

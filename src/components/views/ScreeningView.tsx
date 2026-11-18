@@ -178,9 +178,9 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
           <div className="text-sm leading-relaxed text-emerald-800">
             <span className="font-semibold text-emerald-900">Real model inference. </span>
-            The outputs below were produced by the trained Perceptron and CNN (PTB-XL research
-            models) served by the FastAPI backend. SPANDANA is an academic prototype — never a
-            substitute for clinical evaluation or echocardiography.
+            The outputs below were produced by the trained Perceptron and CNN (PTB-XL
+            models) served by the FastAPI backend. They are never a substitute for clinical
+            evaluation or echocardiography.
           </div>
         </CardContent>
       </Card>
