@@ -11,12 +11,13 @@ import {
   UploadCloud,
 } from "lucide-react";
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
+  Legend,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -32,14 +33,21 @@ import { VerdictBadge } from "@/components/shared/badges";
 import { LeadSparkline } from "@/components/ecg/EcgGrid";
 import { useAnalysesStore, type ViewId } from "@/store/analyses";
 import {
+  CHART_AXIS_LINE,
+  CHART_AXIS_TEXT,
+  CHART_GRID,
+  CHART_LABEL_TEXT,
+  CHART_MAGNITUDE,
+  CHART_SERIES,
+  OUTCOME_COLORS,
+} from "@/lib/chart-palette";
+import {
   CNN_HEADLINE,
   CNN_TRAINING_HISTORY,
   DATASET_STATS,
   MODEL_METRICS,
 } from "@/lib/real-data";
 import { formatDistanceToNow } from "date-fns";
-
-const DONUT_COLORS = ["#0b1728", "#1d6fbe", "#089fbf", "#b45309"];
 
 export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void }) {
   const analyses = useAnalysesStore((s) => s.analyses);
@@ -180,27 +188,34 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           </CardHeader>
           <CardContent className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={CNN_TRAINING_HISTORY} margin={{ top: 8, right: 12, left: -18, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="spAreaBlue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#1d6fbe" stopOpacity={0.28} />
-                    <stop offset="100%" stopColor="#1d6fbe" stopOpacity={0.02} />
-                  </linearGradient>
-                  <linearGradient id="spAreaCyan" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#089fbf" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#089fbf" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" vertical={false} />
-                <XAxis dataKey="epoch" tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={{ stroke: "#dfe6ef" }} interval="preserveStartEnd" />
-                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
+              <LineChart data={CNN_TRAINING_HISTORY} margin={{ top: 8, right: 12, left: -18, bottom: 0 }}>
+                <CartesianGrid stroke={CHART_GRID} vertical={false} />
+                <XAxis dataKey="epoch" tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={{ stroke: CHART_AXIS_LINE }} interval="preserveStartEnd" />
+                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }}
                   labelStyle={{ fontWeight: 600, color: "#0b1728" }}
                 />
-                <Area type="monotone" dataKey="valAuroc" name="Validation ROC-AUC" stroke="#1d6fbe" strokeWidth={2} fill="url(#spAreaBlue)" />
-                <Area type="monotone" dataKey="valAuprc" name="Validation PR-AUC" stroke="#089fbf" strokeWidth={2} fill="url(#spAreaCyan)" />
-              </AreaChart>
+                <Legend wrapperStyle={{ fontSize: 12 }} iconType="plainline" iconSize={14} />
+                <Line
+                  type="monotone"
+                  dataKey="valAuroc"
+                  name="Validation ROC-AUC"
+                  stroke={CHART_SERIES.light[0]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="valAuprc"
+                  name="Validation PR-AUC"
+                  stroke={CHART_SERIES.light[1]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -224,7 +239,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                   strokeWidth={2}
                 >
                   {outcomeSplit.map((entry, i) => (
-                    <Cell key={entry.key} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
+                    <Cell key={entry.key} fill={OUTCOME_COLORS[i % OUTCOME_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} />
@@ -233,7 +248,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
             <ul className="mt-1 space-y-1.5 text-xs text-muted-foreground">
               {outcomeSplit.map((entry, i) => (
                 <li key={entry.key} className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-sm" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
+                  <span className="h-2.5 w-2.5 rounded-sm" style={{ background: OUTCOME_COLORS[i % OUTCOME_COLORS.length] }} />
                   {entry.name} — <span className="sp-tabular font-semibold text-[#0b1728]">{entry.value}</span>
                 </li>
               ))}
@@ -253,15 +268,12 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <CardContent className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={aucData} layout="vertical" margin={{ top: 4, right: 28, left: 8, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" horizontal={false} />
-                <XAxis type="number" domain={[0, 1]} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
-                <YAxis type="category" dataKey="model" width={92} tick={{ fontSize: 11.5, fill: "#0b1728" }} tickLine={false} axisLine={false} />
+                <CartesianGrid stroke={CHART_GRID} horizontal={false} />
+                <XAxis type="number" domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="model" width={92} tick={{ fontSize: 11.5, fill: CHART_LABEL_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} cursor={{ fill: "#f1f5fa" }} />
-                <Bar dataKey="auc" name="ROC-AUC" radius={[0, 5, 5, 0]} barSize={18}>
-                  {aucData.map((d, i) => (
-                    <Cell key={d.model} fill={i < 2 ? "#62a8e0" : i === 2 ? "#1d6fbe" : "#0b1728"} />
-                  ))}
-                </Bar>
+                {/* One measure, one hue: the bar length carries the value. */}
+                <Bar dataKey="auc" name="ROC-AUC" radius={[0, 5, 5, 0]} barSize={18} fill={CHART_MAGNITUDE} />
               </BarChart>
             </ResponsiveContainer>
             <p className="-mt-2 text-[11px] text-muted-foreground">

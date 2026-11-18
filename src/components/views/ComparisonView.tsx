@@ -41,6 +41,12 @@ import { Badge } from "@/components/ui/badge";
 import { ApproximationBadge } from "@/components/shared/badges";
 import { MODEL_METRICS } from "@/lib/real-data";
 import { rocCurveFromAuc } from "@/lib/stats";
+import {
+  CHART_AXIS_LINE,
+  CHART_AXIS_TEXT,
+  CHART_GRID,
+  MODEL_COLORS,
+} from "@/lib/chart-palette";
 import { fetchModelMetrics, type BackendModelMetric } from "@/lib/api";
 
 const METRIC_COLS = [
@@ -52,19 +58,13 @@ const METRIC_COLS = [
   { key: "rocAuc", label: "ROC-AUC" },
 ] as const;
 
-const MODEL_COLORS: Record<string, string> = {
-  "Sokolow–Lyon": "#7fb3e3",
-  Cornell: "#089fbf",
-  Perceptron: "#1d6fbe",
-  CNN: "#0b1728",
-};
+// Model identity comes from the shared validated palette so a method keeps
+// the same colour here and on the dashboard.
 
-const ROC_CURVES = [
-  { model: "Sokolow–Lyon", color: "#7fb3e3" },
-  { model: "Cornell", color: "#089fbf" },
-  { model: "Perceptron", color: "#1d6fbe" },
-  { model: "CNN", color: "#0b1728" },
-];
+const ROC_CURVES = Object.keys(MODEL_COLORS).map((model) => ({
+  model,
+  color: MODEL_COLORS[model],
+}));
 
 const METRIC_DEFINITIONS: { term: string; text: string }[] = [
   { term: "Accuracy", text: "Share of all recordings classified correctly." },
@@ -280,9 +280,9 @@ export function ComparisonView() {
           <CardContent className="h-[340px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={groupedData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }} barGap={2}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" vertical={false} />
-                <XAxis dataKey="metric" tick={{ fontSize: 10.5, fill: "#5b6b7f" }} tickLine={false} axisLine={{ stroke: "#dfe6ef" }} interval={0} />
-                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: "#5b6b7f" }} tickLine={false} axisLine={false} />
+                <CartesianGrid stroke={CHART_GRID} vertical={false} />
+                <XAxis dataKey="metric" tick={{ fontSize: 10.5, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={{ stroke: CHART_AXIS_LINE }} interval={0} />
+                <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} cursor={{ fill: "#f1f5fa" }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} iconType="circle" iconSize={8} />
                 {metrics.map((m) => (
@@ -313,7 +313,7 @@ export function ComparisonView() {
           <CardContent className="h-[340px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={rocData} margin={{ top: 4, right: 12, left: -18, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e6ecf4" />
+                <CartesianGrid stroke={CHART_GRID} />
                 <XAxis
                   dataKey="fpr"
                   type="number"
