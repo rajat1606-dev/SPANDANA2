@@ -23,3 +23,7 @@ data/ptb-xl/
 # System
 .DS_Store
 Thumbs.db
+# Build artefacts and non-authoritative lockfiles
+tsconfig.tsbuildinfo
+# this project uses bun.lock; a stray npm lockfile invites divergence
+package-lock.json
