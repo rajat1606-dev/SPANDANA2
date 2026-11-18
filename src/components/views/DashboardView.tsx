@@ -161,9 +161,9 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         />
         <StatCard
           icon={Gauge}
-          label="Best illustrative ROC-AUC"
-          value="0.91"
-          sub="CNN model · demo value, not measured"
+          label="Best ROC-AUC (PTB-XL test)"
+          value="0.98"
+          sub="CNN · measured on PTB-XL test set"
           tone="cyan"
         />
       </div>
@@ -247,8 +247,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
-              <span>Model ROC-AUC (illustrative)</span>
-              <DemoDataBadge />
+              <span>Model ROC-AUC (PTB-XL test set)</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[240px]">

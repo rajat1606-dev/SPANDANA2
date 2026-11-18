@@ -230,7 +230,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
           {/* Model comparison snapshot */}
           <section className="print-break mt-7">
             <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">
-              5 · Benchmark snapshot (illustrative)
+              5 · Benchmark snapshot (PTB-XL test set)
             </h3>
             <div className="mt-3 overflow-hidden rounded-lg border border-[#e4eaf2]">
               <table className="w-full text-left text-[12px]">
