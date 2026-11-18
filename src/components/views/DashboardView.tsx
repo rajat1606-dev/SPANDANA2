@@ -5,7 +5,6 @@ import {
   Activity,
   ArrowRight,
   BookOpen,
-  FlaskConical,
   Gauge,
   HeartPulse,
   ScanHeart,
@@ -88,7 +87,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <div className="max-w-2xl">
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="border-cyan-400/40 bg-cyan-400/10 text-cyan-300">
-                <FlaskConical className="h-3 w-3" aria-hidden /> Research prototype · PTB-XL results
+                PTB-XL test fold 10
               </Badge>
               <Badge variant="outline" className="hidden border-white/20 bg-white/5 text-white/80 sm:inline-flex">
                 PTB-XL based workflow
