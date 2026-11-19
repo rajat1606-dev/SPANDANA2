@@ -59,12 +59,14 @@ catches **72**.
 Curves, confusion matrices and the raw CSV/JSON live in `data/reports/`; the
 API serves the same payload from `backend/models/metrics.json`.
 
-> **One number is stale.** At the *classic* literature cutoffs the committed
-> metrics report Sokolow–Lyon 3.5 mV → sens 0.733 / spec 0.917, and Cornell
-> (2.0/2.8 mV) → sens 0.792 / spec 0.699. The Cornell row predates two fixes
-> (reversed sex coding, and applying the sex-specific cutoff per recording), so
-> re-run `python training/evaluate_all.py` on the dataset to refresh it. The
-> CNN, Perceptron and tuned-threshold rows are unaffected.
+At the *classic* literature cutoffs: Sokolow–Lyon 3.5 mV → sens 0.733 / spec
+0.917; Cornell (sex-specific 2.0/2.8 mV) → sens 0.703 / spec 0.819.
+
+> The Cornell classic row was regenerated on 19 Nov 2026 after two fixes landed
+> — the reversed sex coding, and applying the sex-specific cutoff per recording
+> rather than one scalar for the whole test set. It previously read sens 0.792 /
+> spec 0.699. Everything else is unchanged: the full pipeline was re-run on the
+> dataset and all four tuned rows reproduced to four decimals.
 
 ---
 

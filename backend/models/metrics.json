@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-15T09:34:48",
+  "generated": "2026-11-19T16:03:57",
   "dataset": "PTB-XL v1.0.3, 100 Hz",
   "test_split": "strat_fold 10 (patient-wise, untouched by training/tuning)",
   "validation_split": "strat_fold 9 (threshold tuning only)",
@@ -2859,22 +2859,22 @@
     "cornell": {
       "n": 2085,
       "positives": 101,
-      "tp": 80,
-      "fp": 597,
-      "fn": 21,
-      "tn": 1387,
-      "accuracy": 0.7035971223021583,
-      "precision": 0.11816838995568685,
-      "sensitivity": 0.7920792079207921,
-      "specificity": 0.6990927419354839,
-      "f1": 0.20565552699228792,
+      "tp": 71,
+      "fp": 359,
+      "fn": 30,
+      "tn": 1625,
+      "accuracy": 0.8134292565947242,
+      "precision": 0.16511627906976745,
+      "sensitivity": 0.7029702970297029,
+      "specificity": 0.8190524193548387,
+      "f1": 0.2674199623352166,
       "roc_auc": 0.832965705844778,
       "pr_auc": 0.240196305934702,
       "confusion_matrix": {
-        "tn": 1387,
-        "fp": 597,
-        "fn": 21,
-        "tp": 80
+        "tn": 1625,
+        "fp": 359,
+        "fn": 30,
+        "tp": 71
       }
     }
   }

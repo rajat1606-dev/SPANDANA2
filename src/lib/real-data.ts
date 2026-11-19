@@ -9,9 +9,9 @@
  *   data/cnn_runs/history.json              CNN training history
  *   backend/models/metrics.json             test-set metrics (strat_fold 10)
  *
- * Sex convention: the source CSV stores a male share of 0.4807. PTB-XL's
- * cohort is ~52% male, so this file was written with the pre-fix (inverted)
- * mapping and the sexes below are flipped from the stored value.
+ * Sex convention: the source CSV stores a male share of 0.5193. PTB-XL's
+ * cohort is ~52% male, so this file was written with the corrected (0 = male)
+ * mapping and the sexes below are taken as stored.
  */
 
 import type { CohortLabel, Sex } from "@/lib/ecg/types";
@@ -117,7 +117,7 @@ export const PTBXL_CASES: PtbxlCase[] = [
 /** Real cohort counts from the committed label/split tables. */
 export const DATASET_STATS = {
   dataset: "PTB-XL v1.0.3, 100 Hz",
-  generated: "2026-11-15T09:34:48",
+  generated: "2026-11-19T16:03:57",
   testSplit: "strat_fold 10 (patient-wise, untouched by training/tuning)",
   totalRecordings: 21799,
   excludedLowCertainty: 1047,
