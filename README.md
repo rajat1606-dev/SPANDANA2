@@ -270,12 +270,42 @@ data/                       dataset, preprocessed arrays, metadata, reports
 ## Testing
 
 ```powershell
-python -m pytest training/tests -q     # labels, splits, leakage, features, models
-python -m pytest backend/tests -q      # endpoints, uploads, invalid inputs, 503 paths
-npx tsx scripts/ecg_sanity.ts          # UI criteria must match feature_rows.csv
-bun run scripts/test-parsers.ts        # browser decoder tests
-npm run lint && npx tsc --noEmit       # frontend lint + types
+python -m pytest training/tests backend/tests -q   # 22 pass, 2 skip
+npm run test:ecg                                   # UI criteria must match feature_rows.csv
+bun run scripts/test-parsers.ts                    # browser decoder tests
+npm run lint && npx tsc --noEmit                   # frontend lint + types
 ```
+
+### If the Python tests die with a DLL error
+
+On Windows you may see every CNN-loading test fail with:
+
+```
+OSError: [WinError 1114] A dynamic link library (DLL) initialization
+routine failed. Error loading ".../torch/lib/c10.dll"
+```
+
+This is an environment fault, not a test failure. Importing **scikit-learn
+before torch** can leave an OpenMP runtime loaded that torch's `c10.dll`
+cannot initialise against:
+
+```powershell
+python -c "import torch"                 # fine
+python -c "import sklearn, torch"        # WinError 1114
+python -c "import torch, sklearn"        # fine - torch first
+```
+
+It happens when the packages are installed into a general-purpose Python
+rather than this project's own environment. Run `.\setup.ps1` and use the
+`.venv` it creates, which installs the pinned set from
+`requirements-vscode.txt` together. To confirm the suite itself is sound
+without rebuilding anything:
+
+```powershell
+python -c "import torch; import sys, pytest; sys.exit(pytest.main(['training/tests','backend/tests','-q']))"
+```
+
+That reports the full 22 pass / 2 skip.
 
 `ecg_sanity.ts` is the guard on the case library: it re-derives both criteria
 the way the app does and asserts they match the dataset values, exiting
