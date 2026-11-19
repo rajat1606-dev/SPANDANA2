@@ -53,7 +53,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
           <Button variant="outline" className="bg-white" onClick={() => onNavigate("upload")}>
             New recording
           </Button>
-          <Button className="bg-[#0b1728] hover:bg-[#12233a]" onClick={() => window.print()}>
+          <Button className="bg-[#1c1917] hover:bg-[#2a2320]" onClick={() => window.print()}>
             <Printer className="h-4 w-4" aria-hidden /> Print / Save as PDF
           </Button>
         </div>
@@ -63,9 +63,9 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
       <Card className="mx-auto w-full max-w-4xl p-0 shadow-md print:shadow-none">
         <div className="p-6 sm:p-10">
           {/* Report header */}
-          <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#0b1728] pb-5">
+          <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#1c1917] pb-5">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0b1728]">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#1c1917]">
                 <svg viewBox="0 0 64 64" className="h-6 w-6" aria-hidden>
                   <path
                     d="M4 34 H18 L23 22 L31 46 L37 27 L41 34 H60"
@@ -78,14 +78,14 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                 </svg>
               </span>
               <div>
-                <p className="text-lg font-bold tracking-[0.12em] text-[#0b1728]">SPANDANA</p>
+                <p className="text-lg font-bold tracking-[0.12em] text-[#1c1917]">SPANDANA</p>
                 <p className="text-[11px] font-medium text-muted-foreground">
                   AI Cardiac Intelligence · “See Beyond the Heartbeat.”
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm font-bold text-[#0b1728]">ECG LVH Screening Report</p>
+              <p className="text-sm font-bold text-[#1c1917]">ECG LVH Screening Report</p>
               <p className="text-[11px] text-muted-foreground">
                 Research report · recorded {format(new Date(selected.createdAt), "dd MMM yyyy")}
               </p>
@@ -99,8 +99,8 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
 
           {/* Recording metadata */}
           <section className="print-break mt-6">
-            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">1 · Recording</h3>
-            <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4 text-[13px] sm:grid-cols-4">
+            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1f63b8]">1 · Recording</h3>
+            <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4 text-[13px] sm:grid-cols-4">
               {[
                 ["Recording ID", selected.meta.code],
                 ["Subject", `${selected.meta.sex}, ${selected.meta.age} yrs`],
@@ -128,7 +128,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
               ].map(([k, v]) => (
                 <div key={k}>
                   <p className="text-[10.5px] uppercase tracking-wide text-muted-foreground">{k}</p>
-                  <p className="sp-tabular mt-0.5 font-semibold text-[#0b1728]">{v}</p>
+                  <p className="sp-tabular mt-0.5 font-semibold text-[#1c1917]">{v}</p>
                 </div>
               ))}
             </div>
@@ -136,7 +136,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
 
           {/* ECG visualisation */}
           <section className="print-break mt-7">
-            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">2 · 12-lead ECG</h3>
+            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1f63b8]">2 · 12-lead ECG</h3>
             <div className="mt-3">
               <EcgGrid
                 waveform={selected.waveform}
@@ -157,13 +157,13 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
 
           {/* Traditional criteria */}
           <section className="print-break mt-7">
-            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">
+            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1f63b8]">
               3 · Traditional voltage criteria
             </h3>
-            <div className="mt-3 overflow-hidden rounded-lg border border-[#e4eaf2]">
+            <div className="mt-3 overflow-hidden rounded-lg border border-[#e7e2db]">
               <table className="w-full text-left text-[12.5px]">
                 <thead>
-                  <tr className="border-b border-[#e4eaf2] bg-[#f8fafd] text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <tr className="border-b border-[#e7e2db] bg-[#faf8f4] text-[11px] uppercase tracking-wide text-muted-foreground">
                     <th className="px-3.5 py-2 font-semibold">Criterion</th>
                     <th className="px-3.5 py-2 font-semibold">Formula</th>
                     <th className="px-3.5 py-2 text-right font-semibold">Measured</th>
@@ -172,8 +172,8 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                   </tr>
                 </thead>
                 <tbody className="sp-tabular">
-                  <tr className="border-b border-[#eef2f8]">
-                    <td className="px-3.5 py-2.5 font-semibold text-[#0b1728]">Sokolow–Lyon</td>
+                  <tr className="border-b border-[#f2ede6]">
+                    <td className="px-3.5 py-2.5 font-semibold text-[#1c1917]">Sokolow–Lyon</td>
                     <td className="px-3.5 py-2.5 font-mono text-[11.5px]">S(V1) + R(V5|V6)</td>
                     <td className="px-3.5 py-2.5 text-right">
                       {sl.sv1.toFixed(2)} + {sl.rv56.toFixed(2)} = <strong>{sl.sum.toFixed(2)} mV</strong>
@@ -184,7 +184,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                     </td>
                   </tr>
                   <tr>
-                    <td className="px-3.5 py-2.5 font-semibold text-[#0b1728]">Cornell</td>
+                    <td className="px-3.5 py-2.5 font-semibold text-[#1c1917]">Cornell</td>
                     <td className="px-3.5 py-2.5 font-mono text-[11.5px]">R(aVL) + S(V3)</td>
                     <td className="px-3.5 py-2.5 text-right">
                       {co.ravl.toFixed(2)} + {co.sv3.toFixed(2)} = <strong>{co.sum.toFixed(2)} mV</strong>
@@ -206,11 +206,11 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
 
           {/* AI screening */}
           <section className="print-break mt-7">
-            <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">
+            <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wider text-[#1f63b8]">
               4 · AI screening results
             </h3>
             {selected.predictions.length === 0 ? (
-              <p className="mt-3 rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4 text-[12px] leading-relaxed text-muted-foreground">
+              <p className="mt-3 rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4 text-[12px] leading-relaxed text-muted-foreground">
                 No model output for this recording. Perceptron and CNN scores are
                 produced only by the FastAPI research backend; start it and re-run
                 the analysis to include them in this report. The voltage criteria
@@ -222,9 +222,9 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                 { p: perceptron, arch: "Linear model · 12 voltage features" },
                 { p: cnn, arch: "1-D CNN · 10 s × 12 leads tensor" },
               ].map(({ p, arch }) => (
-                <div key={p.model} className="rounded-lg border border-[#e4eaf2] p-4">
+                <div key={p.model} className="rounded-lg border border-[#e7e2db] p-4">
                   <div className="flex items-center justify-between">
-                    <p className="font-bold text-[#0b1728]">
+                    <p className="font-bold text-[#1c1917]">
                       {p.model === "cnn" ? "CNN Model" : "Perceptron Model"}
                     </p>
                     <span className={`text-sm font-bold ${p.positive ? "text-red-700" : "text-emerald-700"}`}>
@@ -232,9 +232,9 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                     </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground">{arch}</p>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#eef2f8]">
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#f2ede6]">
                     <div
-                      className={`h-full rounded-full ${p.positive ? "bg-red-600" : "bg-[#1d6fbe]"}`}
+                      className={`h-full rounded-full ${p.positive ? "bg-red-600" : "bg-[#1f63b8]"}`}
                       style={{ width: `${p.probability * 100}%` }}
                     />
                   </div>
@@ -250,13 +250,13 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
 
           {/* Model comparison snapshot */}
           <section className="print-break mt-7">
-            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">
+            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1f63b8]">
               5 · Benchmark snapshot (PTB-XL test set)
             </h3>
-            <div className="mt-3 overflow-hidden rounded-lg border border-[#e4eaf2]">
+            <div className="mt-3 overflow-hidden rounded-lg border border-[#e7e2db]">
               <table className="w-full text-left text-[12px]">
                 <thead>
-                  <tr className="border-b border-[#e4eaf2] bg-[#f8fafd] text-[10.5px] uppercase tracking-wide text-muted-foreground">
+                  <tr className="border-b border-[#e7e2db] bg-[#faf8f4] text-[10.5px] uppercase tracking-wide text-muted-foreground">
                     <th className="px-3 py-2 font-semibold">Method</th>
                     <th className="px-3 py-2 text-right font-semibold">Accuracy</th>
                     <th className="px-3 py-2 text-right font-semibold">Sensitivity</th>
@@ -267,8 +267,8 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                 </thead>
                 <tbody className="sp-tabular">
                   {MODEL_METRICS.map((m) => (
-                    <tr key={m.model} className="border-b border-[#eef2f8] last:border-0">
-                      <td className="px-3 py-2 font-semibold text-[#0b1728]">{m.model}</td>
+                    <tr key={m.model} className="border-b border-[#f2ede6] last:border-0">
+                      <td className="px-3 py-2 font-semibold text-[#1c1917]">{m.model}</td>
                       <td className="px-3 py-2 text-right">{m.accuracy.toFixed(2)}</td>
                       <td className="px-3 py-2 text-right">{m.sensitivity.toFixed(2)}</td>
                       <td className="px-3 py-2 text-right">{m.specificity.toFixed(2)}</td>
@@ -287,12 +287,12 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
 
           {/* Interpretation */}
           <section className="print-break mt-7">
-            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1d6fbe]">
+            <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#1f63b8]">
               6 · Research interpretation
             </h3>
-            <div className="mt-3 rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4">
-              <p className="text-[13px] leading-relaxed text-[#47566b]">
-                <span className="font-semibold capitalize text-[#0b1728]">{selected.interpretation}</span>{" "}
+            <div className="mt-3 rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4">
+              <p className="text-[13px] leading-relaxed text-[#6b6158]">
+                <span className="font-semibold capitalize text-[#1c1917]">{selected.interpretation}</span>{" "}
                 — {selected.notes}
               </p>
               <div className="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3">
@@ -310,7 +310,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
           </section>
 
           {/* Footer */}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-[#dfe6ef] pt-4 text-[10.5px] text-muted-foreground">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-[#e0dad1] pt-4 text-[10.5px] text-muted-foreground">
             <span>
               SPANDANA v0.1.0 · Generated {format(new Date(), "dd MMM yyyy, HH:mm")}
             </span>

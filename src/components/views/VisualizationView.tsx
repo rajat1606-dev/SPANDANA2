@@ -73,7 +73,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
-              className={cn("cursor-default bg-white", showAll && "border-[#1d6fbe] text-[#14508f]")}
+              className={cn("cursor-default bg-white", showAll && "border-[#1f63b8] text-[#174a8c]")}
             >
               12-lead layout
             </Badge>
@@ -88,14 +88,14 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           <CardHeader className="pb-3">
             <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-base">
               <span className="flex items-center gap-2">
-                <Grid3x3 className="h-5 w-5 text-[#1d6fbe]" aria-hidden />
+                <Grid3x3 className="h-5 w-5 text-[#1f63b8]" aria-hidden />
                 {showAll ? "Standard 12-lead display" : "Key-lead display"} — {selected.meta.code}
               </span>
               <span className="flex gap-1.5">
                 <Button
                   size="sm"
                   variant="outline"
-                  className={cn("h-7 bg-white text-xs", showAll && "border-[#1d6fbe] text-[#14508f]")}
+                  className={cn("h-7 bg-white text-xs", showAll && "border-[#1f63b8] text-[#174a8c]")}
                   onClick={() => setShowAll(true)}
                 >
                   All 12 leads
@@ -103,7 +103,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                 <Button
                   size="sm"
                   variant="outline"
-                  className={cn("h-7 bg-white text-xs", !showAll && "border-[#1d6fbe] text-[#14508f]")}
+                  className={cn("h-7 bg-white text-xs", !showAll && "border-[#1f63b8] text-[#174a8c]")}
                   onClick={() => setShowAll(false)}
                 >
                   Key leads
@@ -130,7 +130,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           <Card className="shadow-sm xl:col-span-2">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Activity className="h-5 w-5 text-[#1d6fbe]" aria-hidden />
+                <Activity className="h-5 w-5 text-[#1f63b8]" aria-hidden />
                 Rhythm strip — Lead II ({selected.waveform.durationSec % 1 === 0 ? selected.waveform.durationSec.toFixed(0) : selected.waveform.durationSec.toFixed(1)} s)
               </CardTitle>
             </CardHeader>
@@ -157,8 +157,8 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                     value: `${selected.meta.recording?.sampleRate ?? selected.waveform.sampleRate} Hz`,
                   },
                 ].map((s) => (
-                  <div key={s.label} className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] px-3 py-2.5">
-                    <p className="sp-tabular text-lg font-bold text-[#0b1728]">{s.value}</p>
+                  <div key={s.label} className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] px-3 py-2.5">
+                    <p className="sp-tabular text-lg font-bold text-[#1c1917]">{s.value}</p>
                     <p className="text-[11px] text-muted-foreground">{s.label}</p>
                   </div>
                 ))}
@@ -170,7 +170,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Ruler className="h-5 w-5 text-[#1d6fbe]" aria-hidden />{" "}
+                <Ruler className="h-5 w-5 text-[#1f63b8]" aria-hidden />{" "}
                 {decoded ? "Measured amplitudes" : "Lead amplitudes"}
               </CardTitle>
             </CardHeader>
@@ -189,13 +189,13 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                       ([lead, amp]) => {
                         const critical = CRITERIA_LEADS.includes(lead);
                         return (
-                          <TableRow key={lead} className={critical ? "bg-[#e6f2fb]/50" : undefined}>
+                          <TableRow key={lead} className={critical ? "bg-[#e9f0fa]/50" : undefined}>
                             <TableCell className="pl-6 font-mono text-xs font-semibold">
                               {lead}
                               {critical && (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Info className="ml-1.5 inline h-3 w-3 text-[#1d6fbe]" aria-label="Used by voltage criteria" />
+                                    <Info className="ml-1.5 inline h-3 w-3 text-[#1f63b8]" aria-label="Used by voltage criteria" />
                                   </TooltipTrigger>
                                   <TooltipContent className="text-xs">
                                     This lead feeds the Sokolow–Lyon / Cornell calculation.
@@ -231,7 +231,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                   </TableBody>
                 </Table>
               </div>
-              <div className="border-t border-[#eef2f8] px-6 py-3">
+              <div className="border-t border-[#f2ede6] px-6 py-3">
                 <p className="text-[11px] leading-relaxed text-muted-foreground">
                   Highlighted rows feed the voltage criteria.{" "}
                   {!decoded && (
@@ -242,7 +242,7 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                       the rendered trace and is not a PTB-XL measurement.{" "}
                     </>
                   )}
-                  <button className="font-medium text-[#1d6fbe] hover:underline" onClick={() => onNavigate("criteria")}>
+                  <button className="font-medium text-[#1f63b8] hover:underline" onClick={() => onNavigate("criteria")}>
                     Open Traditional Analysis →
                   </button>
                 </p>

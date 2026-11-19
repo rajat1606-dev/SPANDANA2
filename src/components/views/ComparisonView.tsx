@@ -185,7 +185,7 @@ export function ComparisonView() {
         <CardHeader className="pb-3">
           <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-base">
             <span className="flex items-center gap-2">
-              <Table2 className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Validation metrics by method
+              <Table2 className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Validation metrics by method
             </span>
             {realMetrics ? (
               <Badge className="bg-emerald-600">
@@ -217,7 +217,7 @@ export function ComparisonView() {
             <TableBody>
               {metrics.map((m) => (
                 <TableRow key={m.model}>
-                  <TableCell className="font-semibold text-[#0b1728]">
+                  <TableCell className="font-semibold text-[#1c1917]">
                     <span className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full" style={{ background: MODEL_COLORS[m.model] }} />
                       {m.model}
@@ -228,7 +228,7 @@ export function ComparisonView() {
                     return (
                       <TableCell
                         key={c.key}
-                        className={`sp-tabular text-right ${isBest ? "bg-[#e6f2fb] font-bold text-[#14508f]" : ""}`}
+                        className={`sp-tabular text-right ${isBest ? "bg-[#e9f0fa] font-bold text-[#174a8c]" : ""}`}
                       >
                         {(m[c.key] ?? 0).toFixed(2)}
                       </TableCell>
@@ -257,14 +257,14 @@ export function ComparisonView() {
             ) : (
               <>
                 Values are the measured SPANDANA results bundled with this build
-                (<code className="rounded bg-[#f1f5fa] px-1 font-mono">backend/models/metrics.json</code>):
+                (<code className="rounded bg-[#f5f1ea] px-1 font-mono">backend/models/metrics.json</code>):
                 patient-wise test split (strat_fold 10) of PTB-XL v1.0.3, thresholds
                 tuned on validation fold 9 only. Labels are SCP ECG statements, not
                 echo-confirmed diagnoses. Connect the backend to serve them live,
                 with measured ROC curves and PR-AUC.
               </>
             )}{" "}
-            Source: <code className="rounded bg-[#f1f5fa] px-1 font-mono">GET /api/v1/models/metrics</code>.
+            Source: <code className="rounded bg-[#f5f1ea] px-1 font-mono">GET /api/v1/models/metrics</code>.
           </p>
         </CardContent>
       </Card>
@@ -274,7 +274,7 @@ export function ComparisonView() {
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <GitCompare className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Metric profile comparison
+              <GitCompare className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Metric profile comparison
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[340px]">
@@ -283,7 +283,7 @@ export function ComparisonView() {
                 <CartesianGrid stroke={CHART_GRID} vertical={false} />
                 <XAxis dataKey="metric" tick={{ fontSize: 10.5, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={{ stroke: CHART_AXIS_LINE }} interval={0} />
                 <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} cursor={{ fill: "#f1f5fa" }} />
+                <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#e0dad1", fontSize: 12 }} cursor={{ fill: "#f5f1ea" }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} iconType="circle" iconSize={8} />
                 {metrics.map((m) => (
                   <Bar key={m.model} dataKey={m.model} fill={MODEL_COLORS[m.model]} radius={[3, 3, 0, 0]} maxBarSize={22} />
@@ -298,7 +298,7 @@ export function ComparisonView() {
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
               <span className="flex items-center gap-2">
-                <LineChartIcon className="h-5 w-5 text-[#1d6fbe]" aria-hidden />{" "}
+                <LineChartIcon className="h-5 w-5 text-[#1f63b8]" aria-hidden />{" "}
                 {realCurves
                   ? "ROC curves (measured — test fold 10)"
                   : "ROC curves (binormal, approximated from measured AUC)"}
@@ -318,20 +318,20 @@ export function ComparisonView() {
                   dataKey="fpr"
                   type="number"
                   domain={[0, 1]}
-                  tick={{ fontSize: 11, fill: "#5b6b7f" }}
+                  tick={{ fontSize: 11, fill: "#7a7066" }}
                   tickLine={false}
-                  axisLine={{ stroke: "#dfe6ef" }}
-                  label={{ value: "False positive rate", position: "insideBottom", offset: -4, fontSize: 11, fill: "#5b6b7f" }}
+                  axisLine={{ stroke: "#e0dad1" }}
+                  label={{ value: "False positive rate", position: "insideBottom", offset: -4, fontSize: 11, fill: "#7a7066" }}
                 />
                 <YAxis
                   domain={[0, 1]}
-                  tick={{ fontSize: 11, fill: "#5b6b7f" }}
+                  tick={{ fontSize: 11, fill: "#7a7066" }}
                   tickLine={false}
                   axisLine={false}
-                  label={{ value: "True positive rate", angle: -90, position: "insideLeft", offset: 18, fontSize: 11, fill: "#5b6b7f" }}
+                  label={{ value: "True positive rate", angle: -90, position: "insideLeft", offset: 18, fontSize: 11, fill: "#7a7066" }}
                 />
                 <Tooltip
-                  contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }}
+                  contentStyle={{ borderRadius: 10, borderColor: "#e0dad1", fontSize: 12 }}
                   formatter={(value: number, name: string) => [value.toFixed(3), name]}
                   labelFormatter={(l) => `FPR ${Number(l).toFixed(2)}`}
                 />
@@ -361,8 +361,8 @@ export function ComparisonView() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {METRIC_DEFINITIONS.map((d) => (
-              <div key={d.term} className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] px-3.5 py-2.5">
-                <p className="text-xs font-bold text-[#0b1728]">{d.term}</p>
+              <div key={d.term} className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] px-3.5 py-2.5">
+                <p className="text-xs font-bold text-[#1c1917]">{d.term}</p>
                 <p className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">{d.text}</p>
               </div>
             ))}
@@ -372,7 +372,7 @@ export function ComparisonView() {
         <Card className="border-[#bfe0f2] bg-[#f4f9fd] shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Plug className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Live metrics integration
+              <Plug className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Live metrics integration
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-[13px] leading-relaxed text-muted-foreground">
@@ -388,7 +388,7 @@ export function ComparisonView() {
                 ) : null}
                 <p className="rounded-md bg-white p-2.5 text-[11.5px]">
                   Regenerate the numbers with{" "}
-                  <code className="rounded bg-[#f1f5fa] px-1 font-mono">python training/evaluate_all.py</code>{" "}
+                  <code className="rounded bg-[#f5f1ea] px-1 font-mono">python training/evaluate_all.py</code>{" "}
                   after re-training the models.
                 </p>
               </>

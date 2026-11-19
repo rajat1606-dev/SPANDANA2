@@ -70,9 +70,9 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         />
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <Card className="shadow-sm lg:col-span-2">
-            <CardContent className="space-y-3 p-5 text-[13.5px] leading-relaxed text-[#47566b]">
+            <CardContent className="space-y-3 p-5 text-[13.5px] leading-relaxed text-[#6b6158]">
               <p>
-                <strong className="text-[#0b1728]">Left Ventricular Hypertrophy (LVH)</strong> is an
+                <strong className="text-[#1c1917]">Left Ventricular Hypertrophy (LVH)</strong> is an
                 abnormal thickening of the muscle of the heart&apos;s left pumping chamber. It is
                 typically an adaptive response to chronic pressure overload — most commonly
                 long-standing arterial hypertension, but also aortic stenosis and hypertrophic
@@ -85,7 +85,7 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
               </p>
               <p>
                 The clinical reference standard for chamber quantification is{" "}
-                <strong className="text-[#0b1728]">echocardiography</strong>, which measures wall
+                <strong className="text-[#1c1917]">echocardiography</strong>, which measures wall
                 thickness and mass directly. ECG-based screening is far cheaper and faster, but
                 substantially less sensitive — the exact trade-off this research platform
                 investigates.
@@ -94,10 +94,10 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
           </Card>
           <Card className="shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-[#0b1728]">Common causes</CardTitle>
+              <CardTitle className="text-sm font-semibold text-[#1c1917]">Common causes</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2 text-[13px] text-[#47566b]">
+              <ul className="space-y-2 text-[13px] text-[#6b6158]">
                 {[
                   "Hypertension (most common)",
                   "Aortic valve stenosis",
@@ -106,7 +106,7 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
                   "Obesity and sleep apnoea",
                 ].map((c) => (
                   <li key={c} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#1d6fbe]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#1f63b8]" />
                     {c}
                   </li>
                 ))}
@@ -127,8 +127,8 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
           {PIPELINE.map((p) => (
             <Card key={p.step} className="shadow-sm">
               <CardContent className="p-4">
-                <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#089fbf]">{p.step}</p>
-                <p className="mt-1.5 text-[13.5px] font-bold text-[#0b1728]">{p.title}</p>
+                <p className="text-[10.5px] font-bold uppercase tracking-wider text-[#1f63b8]">{p.step}</p>
+                <p className="mt-1.5 text-[13.5px] font-bold text-[#1c1917]">{p.title}</p>
                 <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{p.body}</p>
               </CardContent>
             </Card>
@@ -141,19 +141,19 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Activity className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Why ECG can hint at LVH
+              <Activity className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Why ECG can hint at LVH
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-[13px] leading-relaxed text-[#47566b]">
+          <CardContent className="space-y-3 text-[13px] leading-relaxed text-[#6b6158]">
             <p>
               Thickened left-ventricular walls generate larger electrical vectors. On the surface
               ECG this appears as taller R waves in lateral leads (V5, V6, I, aVL) and deeper S
               waves in right precordial leads (V1–V3).
             </p>
             <p>
-              <strong className="text-[#0b1728]">Sokolow–Lyon (1949)</strong> sums the S wave in V1
+              <strong className="text-[#1c1917]">Sokolow–Lyon (1949)</strong> sums the S wave in V1
               with the R wave in V5/V6 (≥ 3.5 mV).{" "}
-              <strong className="text-[#0b1728]">Cornell (1987)</strong> combines R in aVL with S in
+              <strong className="text-[#1c1917]">Cornell (1987)</strong> combines R in aVL with S in
               V3 using sex-specific thresholds, improving performance.
             </p>
             <p>
@@ -167,7 +167,7 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Database className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Dataset — PTB-XL
+              <Database className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Dataset — PTB-XL
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -177,15 +177,15 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
                 ["10 s", "recording length"],
                 ["500 Hz", "sampling rate"],
               ].map(([v, l]) => (
-                <div key={l} className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] px-2 py-3">
-                  <p className="sp-tabular text-lg font-bold text-[#0b1728]">{v}</p>
+                <div key={l} className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] px-2 py-3">
+                  <p className="sp-tabular text-lg font-bold text-[#1c1917]">{v}</p>
                   <p className="text-[10.5px] leading-tight text-muted-foreground">{l}</p>
                 </div>
               ))}
             </div>
-            <p className="text-[13px] leading-relaxed text-[#47566b]">
+            <p className="text-[13px] leading-relaxed text-[#6b6158]">
               SPANDANA&apos;s methodology is designed around the{" "}
-              <strong className="text-[#0b1728]">PTB-XL</strong> public dataset (Physikalisch-
+              <strong className="text-[#1c1917]">PTB-XL</strong> public dataset (Physikalisch-
               Technische Bundesanstalt, via PhysioNet): 12-lead recordings collected between 1989
               and 1996 with mostly 500 Hz sampling and multi-annotator SCP-ECG statements,
               including a hypertrophy annotation superclass for model training and evaluation.
@@ -204,10 +204,10 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Layers className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Model architecture — Perceptron
+              <Layers className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Model architecture — Perceptron
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-[13px] leading-relaxed text-[#47566b]">
+          <CardContent className="space-y-3 text-[13px] leading-relaxed text-[#6b6158]">
             <p>
               A single-layer perceptron is the transparent baseline: it learns a weighted linear
               combination of 12 engineered voltage features (per-lead R/S amplitudes) followed by a
@@ -227,18 +227,18 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Layers className="h-5 w-5 text-[#089fbf]" aria-hidden /> Model architecture — CNN
+              <Layers className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Model architecture — CNN
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-[13px] leading-relaxed text-[#47566b]">
+            <p className="text-[13px] leading-relaxed text-[#6b6158]">
               A compact 1-D convolutional network learns morphology directly from the raw
               12-lead tensor, capturing patterns beyond fixed voltage thresholds.
             </p>
             <ol className="space-y-1.5">
               {CNN_BLOCKS.map((b, i) => (
-                <li key={b} className="flex items-center gap-2.5 rounded-md border border-[#e4eaf2] bg-[#f8fafd] px-3 py-1.5 text-[12px] text-[#0b1728]">
-                  <span className="sp-tabular text-[10px] font-bold text-[#089fbf]">{String(i).padStart(2, "0")}</span>
+                <li key={b} className="flex items-center gap-2.5 rounded-md border border-[#e7e2db] bg-[#faf8f4] px-3 py-1.5 text-[12px] text-[#1c1917]">
+                  <span className="sp-tabular text-[10px] font-bold text-[#1f63b8]">{String(i).padStart(2, "0")}</span>
                   {b}
                 </li>
               ))}
@@ -289,7 +289,7 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
               <div key={l.t} className="flex items-start gap-3">
                 <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" aria-hidden />
                 <div>
-                  <p className="text-[13px] font-bold text-[#0b1728]">{l.t}</p>
+                  <p className="text-[13px] font-bold text-[#1c1917]">{l.t}</p>
                   <p className="mt-0.5 text-[12px] leading-relaxed text-[#7a6a45]">{l.d}</p>
                 </div>
               </div>
@@ -303,33 +303,33 @@ export function ResearchView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         <SectionHeading icon={ScrollText} title="References" description="Key literature behind the methodology." />
         <Card className="shadow-sm">
           <CardContent className="p-5">
-            <ol className="space-y-2.5 text-[12.5px] leading-relaxed text-[#47566b]">
+            <ol className="space-y-2.5 text-[12.5px] leading-relaxed text-[#6b6158]">
               <li className="flex gap-2.5">
-                <span className="font-semibold text-[#1d6fbe]">1.</span>
+                <span className="font-semibold text-[#1f63b8]">1.</span>
                 Sokolow M, Lyon TP. The ventricular complex in left ventricular hypertrophy as obtained by unipolar precordial and limb leads. <em>American Heart Journal</em>. 1949;37(1):161–186.
               </li>
               <li className="flex gap-2.5">
-                <span className="font-semibold text-[#1d6fbe]">2.</span>
+                <span className="font-semibold text-[#1f63b8]">2.</span>
                 Casale PN, Devereux RB, Alonso DR, Campo E, Kligfield P. Improved sex-specific criteria of left ventricular hypertrophy for electrocardiography and echocardiography. <em>Circulation</em>. 1987;75(3):565–572.
               </li>
               <li className="flex gap-2.5">
-                <span className="font-semibold text-[#1d6fbe]">3.</span>
+                <span className="font-semibold text-[#1f63b8]">3.</span>
                 Wagner P, et al. PTB-XL, a large publicly available electrocardiography dataset. <em>Scientific Data</em>. 2020;7:206.
               </li>
               <li className="flex gap-2.5">
-                <span className="font-semibold text-[#1d6fbe]">4.</span>
+                <span className="font-semibold text-[#1f63b8]">4.</span>
                 Goldberger AL, et al. PhysioBank, PhysioToolkit, and PhysioNet. <em>Circulation</em>. 2000;101(23):e215–e220.
               </li>
               <li className="flex gap-2.5">
-                <span className="font-semibold text-[#1d6fbe]">5.</span>
+                <span className="font-semibold text-[#1f63b8]">5.</span>
                 Lang RM, et al. Recommendations for cardiac chamber quantification by echocardiography in adults. <em>Journal of the American Society of Echocardiography</em>. 2015;28(1):1–39.
               </li>
             </ol>
-            <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#eef2f8] pt-4">
-              <FlaskConical className="h-4 w-4 text-[#1d6fbe]" aria-hidden />
+            <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#f2ede6] pt-4">
+              <FlaskConical className="h-4 w-4 text-[#1f63b8]" aria-hidden />
               <p className="text-xs text-muted-foreground">
                 Want the interactive side? Open the{" "}
-                <button className="font-medium text-[#1d6fbe] hover:underline" onClick={() => onNavigate("upload")}>
+                <button className="font-medium text-[#1f63b8] hover:underline" onClick={() => onNavigate("upload")}>
                   ECG Analysis
                 </button>{" "}
                 module to explore the pipeline with the PTB-XL library or your own recordings.

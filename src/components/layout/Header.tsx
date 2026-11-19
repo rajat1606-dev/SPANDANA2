@@ -61,7 +61,7 @@ export function Header({
   const meta = VIEW_META[view];
 
   return (
-    <header className="no-print sticky top-0 z-30 border-b border-[#dfe6ef] bg-white/85 backdrop-blur">
+    <header className="no-print sticky top-0 z-30 border-b border-[#e0dad1] bg-white/85 backdrop-blur">
       <div className="flex items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
         {/* Mobile nav */}
         <Sheet open={open} onOpenChange={setOpen}>
@@ -70,8 +70,8 @@ export function Header({
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-72 border-0 bg-[#0b1728] p-0">
-            <SheetHeader className="border-b border-[#1c2f47] px-4 py-3">
+          <SheetContent side="left" className="w-72 border-0 bg-[#1c1917] p-0">
+            <SheetHeader className="border-b border-[#38302b] px-4 py-3">
               <SheetTitle className="text-left text-xs font-medium tracking-widest text-[#7d93ad]">
                 SPANDANA NAVIGATION
               </SheetTitle>
@@ -92,16 +92,16 @@ export function Header({
         </Sheet>
 
         <div className="min-w-0 flex-1">
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#1d6fbe]">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#1f63b8]">
             {meta.module} · SPANDANA Research Platform
           </p>
-          <h1 className="truncate text-lg font-bold text-[#0b1728] sm:text-xl">{meta.title}</h1>
+          <h1 className="truncate text-lg font-bold text-[#1c1917] sm:text-xl">{meta.title}</h1>
         </div>
 
         <BackendChip status={status} />
         <Button
           size="sm"
-          className="hidden bg-[#0b1728] text-white hover:bg-[#12233a] md:inline-flex"
+          className="hidden bg-[#1c1917] text-white hover:bg-[#2a2320] md:inline-flex"
           onClick={() => onNavigate("upload")}
         >
           <Plus className="h-4 w-4" aria-hidden />

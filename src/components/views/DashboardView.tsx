@@ -90,7 +90,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <Card className="overflow-hidden border-0 bg-[#0b1728] text-white shadow-md">
+      <Card className="overflow-hidden border-0 bg-[#1c1917] text-white shadow-md">
         <div className="relative px-6 py-7 sm:px-8">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2">
@@ -193,8 +193,8 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                 <XAxis dataKey="epoch" tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={{ stroke: CHART_AXIS_LINE }} interval="preserveStartEnd" />
                 <YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
                 <Tooltip
-                  contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }}
-                  labelStyle={{ fontWeight: 600, color: "#0b1728" }}
+                  contentStyle={{ borderRadius: 10, borderColor: "#e0dad1", fontSize: 12 }}
+                  labelStyle={{ fontWeight: 600, color: "#1c1917" }}
                 />
                 <Legend wrapperStyle={{ fontSize: 12 }} iconType="plainline" iconSize={14} />
                 <Line
@@ -242,14 +242,14 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                     <Cell key={entry.key} fill={OUTCOME_COLORS[i % OUTCOME_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} />
+                <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#e0dad1", fontSize: 12 }} />
               </PieChart>
             </ResponsiveContainer>
             <ul className="mt-1 space-y-1.5 text-xs text-muted-foreground">
               {outcomeSplit.map((entry, i) => (
                 <li key={entry.key} className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-sm" style={{ background: OUTCOME_COLORS[i % OUTCOME_COLORS.length] }} />
-                  {entry.name} — <span className="sp-tabular font-semibold text-[#0b1728]">{entry.value}</span>
+                  {entry.name} — <span className="sp-tabular font-semibold text-[#1c1917]">{entry.value}</span>
                 </li>
               ))}
             </ul>
@@ -271,14 +271,14 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                 <CartesianGrid stroke={CHART_GRID} horizontal={false} />
                 <XAxis type="number" domain={[0, 1]} tick={{ fontSize: 11, fill: CHART_AXIS_TEXT }} tickLine={false} axisLine={false} />
                 <YAxis type="category" dataKey="model" width={92} tick={{ fontSize: 11.5, fill: CHART_LABEL_TEXT }} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#dfe6ef", fontSize: 12 }} cursor={{ fill: "#f1f5fa" }} />
+                <Tooltip contentStyle={{ borderRadius: 10, borderColor: "#e0dad1", fontSize: 12 }} cursor={{ fill: "#f5f1ea" }} />
                 {/* One measure, one hue: the bar length carries the value. */}
                 <Bar dataKey="auc" name="ROC-AUC" radius={[0, 5, 5, 0]} barSize={18} fill={CHART_MAGNITUDE} />
               </BarChart>
             </ResponsiveContainer>
             <p className="-mt-2 text-[11px] text-muted-foreground">
               Full metric comparison in the{" "}
-              <button className="font-medium text-[#1d6fbe] underline-offset-2 hover:underline" onClick={() => onNavigate("comparison")}>
+              <button className="font-medium text-[#1f63b8] underline-offset-2 hover:underline" onClick={() => onNavigate("comparison")}>
                 Model Comparison
               </button>{" "}
               module.
@@ -290,12 +290,12 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between text-base">
               <span>Recent activity</span>
-              <Button variant="ghost" size="sm" className="text-[#1d6fbe] hover:text-[#14508f]" onClick={() => onNavigate("visualization")}>
+              <Button variant="ghost" size="sm" className="text-[#1f63b8] hover:text-[#174a8c]" onClick={() => onNavigate("visualization")}>
                 Open workspace <ArrowRight className="h-4 w-4" aria-hidden />
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent className="divide-y divide-[#eef2f8] p-0">
+          <CardContent className="divide-y divide-[#f2ede6] p-0">
             {recent.map((a) => (
               <button
                 key={a.id}
@@ -304,7 +304,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
                 className="flex w-full items-center gap-4 px-6 py-3 text-left transition-colors hover:bg-[#f6f9fc]"
               >
                 <div className="w-28 shrink-0">
-                  <p className="font-mono text-xs font-bold text-[#0b1728]">{a.meta.code}</p>
+                  <p className="font-mono text-xs font-bold text-[#1c1917]">{a.meta.code}</p>
                   <p className="text-[11px] text-muted-foreground">
                     {a.meta.sex === "Male" ? "Male" : "Female"}, {a.meta.age}
                   </p>

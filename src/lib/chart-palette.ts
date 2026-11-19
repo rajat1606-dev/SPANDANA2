@@ -63,7 +63,7 @@ export const OUTCOME_COLORS = [
 ];
 
 /** Chart chrome: solid hairlines one shade off the surface, recessive ink. */
-export const CHART_GRID = "#e6ecf4";
-export const CHART_AXIS_LINE = "#dfe6ef";
-export const CHART_AXIS_TEXT = "#5b6b7f";
-export const CHART_LABEL_TEXT = "#0b1728";
+export const CHART_GRID = "#ebe6de";
+export const CHART_AXIS_LINE = "#e0dad1";
+export const CHART_AXIS_TEXT = "#7a7066";
+export const CHART_LABEL_TEXT = "#1c1917";

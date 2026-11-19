@@ -114,7 +114,7 @@ export function EcgGrid({
 export function LeadSparkline({
   waveform,
   lead = "II",
-  color = "#1d6fbe",
+  color = "#1f63b8",
   className = "h-10 w-full",
   strokeWidth = 1.8,
 }: {

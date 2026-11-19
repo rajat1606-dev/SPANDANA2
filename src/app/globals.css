@@ -51,45 +51,45 @@
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #0b1728;
+  --primary: #1c1917;
   --primary-foreground: #ffffff;
   --secondary: #e8eef6;
-  --secondary-foreground: #0b1728;
-  --muted: #eef2f8;
-  --muted-foreground: #5b6b7f;
-  --accent: #e6f2fb;
-  --accent-foreground: #14508f;
+  --secondary-foreground: #1c1917;
+  --muted: #f2ede6;
+  --muted-foreground: #7a7066;
+  --accent: #e9f0fa;
+  --accent-foreground: #174a8c;
   --destructive: #b91c1c;
-  --border: #dfe6ef;
+  --border: #e0dad1;
   --input: #d4dde8;
-  --ring: #1d6fbe;
-  --chart-1: #1d6fbe;
-  --chart-2: #089fbf;
-  --chart-3: #0b1728;
+  --ring: #1f63b8;
+  --chart-1: #1f63b8;
+  --chart-2: #1f63b8;
+  --chart-3: #1c1917;
   --chart-4: #62a8e0;
   --chart-5: #b45309;
-  --sidebar: #0b1728;
+  --sidebar: #1c1917;
   --sidebar-foreground: #c7d3e2;
-  --sidebar-primary: #1d6fbe;
+  --sidebar-primary: #1f63b8;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #12233a;
+  --sidebar-accent: #2a2320;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #1c2f47;
-  --sidebar-ring: #1d6fbe;
+  --sidebar-border: #38302b;
+  --sidebar-ring: #1f63b8;
 }
 
 /* ---- SPANDANA brand tokens ---- */
 :root {
-  --sp-navy: #0b1728;
-  --sp-navy-2: #12233a;
-  --sp-navy-3: #1c2f47;
-  --sp-blue: #1d6fbe;
-  --sp-blue-deep: #14508f;
-  --sp-blue-soft: #e6f2fb;
-  --sp-cyan: #089fbf;
+  --sp-navy: #1c1917;
+  --sp-navy-2: #2a2320;
+  --sp-navy-3: #38302b;
+  --sp-blue: #1f63b8;
+  --sp-blue-deep: #174a8c;
+  --sp-blue-soft: #e9f0fa;
+  --sp-cyan: #1f63b8;
   --sp-cyan-bright: #06b6d4;
   --sp-ink: #0f172a;
-  --sp-body: #47566b;
+  --sp-body: #6b6158;
   --sp-ecg-ink: #14263c;
   --sp-success: #15803d;
   --sp-success-soft: #e8f6ec;
@@ -163,7 +163,7 @@
   width: 4px;
 }
 .sp-sidebar-scroll::-webkit-scrollbar-thumb {
-  background: #1c2f47;
+  background: #38302b;
   border-radius: 999px;
 }
 

@@ -128,11 +128,11 @@ export function SourceBadge({ meta }: { meta: PatientMeta }) {
 export function ModelChip({ model }: { model: "perceptron" | "cnn" }) {
   const isP = model === "perceptron";
   return (
-    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0b1728]">
+    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1c1917]">
       <span
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-md",
-          isP ? "bg-[#e6f2fb] text-[#14508f]" : "bg-cyan-50 text-cyan-700",
+          isP ? "bg-[#e9f0fa] text-[#174a8c]" : "bg-cyan-50 text-cyan-700",
         )}
       >
         {isP ? <Cpu className="h-4 w-4" aria-hidden /> : <Gauge className="h-4 w-4" aria-hidden />}

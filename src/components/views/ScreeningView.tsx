@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AnalysisMetaRow, AnalysisSelector } from "@/components/shared/AnalysisSelector";
 import { ModelChip } from "@/components/shared/badges";
+import { MODEL_COLORS } from "@/lib/chart-palette";
 import { useAnalysesStore, useSelectedAnalysis } from "@/store/analyses";
 import { cn } from "@/lib/utils";
 
@@ -45,11 +46,11 @@ function ProbabilityGauge({
           barSize={12}
         >
           <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-          <RadialBar background={{ fill: "#eef2f8" }} dataKey="value" cornerRadius={6} />
+          <RadialBar background={{ fill: "#f2ede6" }} dataKey="value" cornerRadius={6} />
         </RadialBarChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={cn("sp-tabular text-3xl font-bold", positive ? "text-red-700" : "text-[#0b1728]")}>
+        <span className={cn("sp-tabular text-3xl font-bold", positive ? "text-red-700" : "text-[#1c1917]")}>
           {(probability * 100).toFixed(1)}%
         </span>
         <span className="text-[11px] text-muted-foreground">LVH probability</span>
@@ -70,13 +71,13 @@ function ContributionBars({
       {scored.map((s) => (
         <li key={s.feature} className="flex items-center gap-2 text-xs">
           <span className="w-24 shrink-0 text-muted-foreground">{s.feature}</span>
-          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#eef2f8]">
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#f2ede6]">
             <div
-              className={cn("h-full rounded-full", s.score >= 0 ? "bg-[#1d6fbe]" : "bg-[#9fb2c8]")}
+              className={cn("h-full rounded-full", s.score >= 0 ? "bg-[#1f63b8]" : "bg-[#9fb2c8]")}
               style={{ width: `${(Math.abs(s.score) / max) * 100}%` }}
             />
           </div>
-          <span className="sp-tabular w-16 text-right font-medium text-[#0b1728]">
+          <span className="sp-tabular w-16 text-right font-medium text-[#1c1917]">
             {s.score >= 0 ? "+" : ""}
             {s.score.toFixed(2)}
           </span>
@@ -147,7 +148,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
             <button
               type="button"
               onClick={() => onNavigate("criteria")}
-              className="font-semibold text-[#1d6fbe] underline-offset-2 hover:underline"
+              className="font-semibold text-[#1f63b8] underline-offset-2 hover:underline"
             >
               View the Sokolow–Lyon and Cornell results for this recording →
             </button>
@@ -196,7 +197,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <ProbabilityGauge probability={perceptron.probability} positive={perceptron.positive} hue="#1d6fbe" />
+              <ProbabilityGauge probability={perceptron.probability} positive={perceptron.positive} hue={MODEL_COLORS.Perceptron} />
               <div className="min-w-[150px] flex-1 space-y-2 text-sm">
                 <div
                   className={cn(
@@ -211,15 +212,15 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
                 </div>
                 <p className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Decision threshold</span>
-                  <span className="sp-tabular font-semibold text-[#0b1728]">{perceptron.threshold.toFixed(2)}</span>
+                  <span className="sp-tabular font-semibold text-[#1c1917]">{perceptron.threshold.toFixed(2)}</span>
                 </p>
                 <p className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Inference latency</span>
-                  <span className="sp-tabular font-semibold text-[#0b1728]">{perceptron.latencyMs} ms</span>
+                  <span className="sp-tabular font-semibold text-[#1c1917]">{perceptron.latencyMs} ms</span>
                 </p>
                 <p className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Feature space</span>
-                  <span className="font-semibold text-[#0b1728]">12 voltage features</span>
+                  <span className="font-semibold text-[#1c1917]">12 voltage features</span>
                 </p>
               </div>
             </div>
@@ -247,7 +248,7 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <ProbabilityGauge probability={cnn.probability} positive={cnn.positive} hue="#089fbf" />
+              <ProbabilityGauge probability={cnn.probability} positive={cnn.positive} hue={MODEL_COLORS.CNN} />
               <div className="min-w-[150px] flex-1 space-y-2 text-sm">
                 <div
                   className={cn(
@@ -262,15 +263,15 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
                 </div>
                 <p className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Decision threshold</span>
-                  <span className="sp-tabular font-semibold text-[#0b1728]">{cnn.threshold.toFixed(2)}</span>
+                  <span className="sp-tabular font-semibold text-[#1c1917]">{cnn.threshold.toFixed(2)}</span>
                 </p>
                 <p className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Inference latency</span>
-                  <span className="sp-tabular font-semibold text-[#0b1728]">{cnn.latencyMs} ms</span>
+                  <span className="sp-tabular font-semibold text-[#1c1917]">{cnn.latencyMs} ms</span>
                 </p>
                 <p className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Input window</span>
-                  <span className="font-semibold text-[#0b1728]">10 s × 12 leads</span>
+                  <span className="font-semibold text-[#1c1917]">10 s × 12 leads</span>
                 </p>
               </div>
             </div>
@@ -293,21 +294,21 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <Gauge className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Cross-check with traditional criteria
+            <Gauge className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Cross-check with traditional criteria
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4">
+          <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4">
             <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Traditional headline</p>
-            <p className="mt-1 text-sm font-semibold text-[#0b1728]">
+            <p className="mt-1 text-sm font-semibold text-[#1c1917]">
               {selected.criteria.sokolowLyon.positive || selected.criteria.cornell.positive
                 ? "At least one criterion positive"
                 : "Both criteria negative"}
             </p>
           </div>
-          <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4">
+          <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4">
             <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Model consensus</p>
-            <p className="mt-1 text-sm font-semibold text-[#0b1728]">
+            <p className="mt-1 text-sm font-semibold text-[#1c1917]">
               {perceptron.positive && cnn.positive
                 ? "Both models above threshold"
                 : !perceptron.positive && !cnn.positive
@@ -315,9 +316,9 @@ export function ScreeningView({ onNavigate }: { onNavigate: (v: "comparison" | "
                   : "Models disagree"}
             </p>
           </div>
-          <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4">
+          <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4">
             <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Overall interpretation</p>
-            <p className="mt-1 text-sm font-semibold capitalize text-[#0b1728]">{selected.interpretation}</p>
+            <p className="mt-1 text-sm font-semibold capitalize text-[#1c1917]">{selected.interpretation}</p>
           </div>
           <div className="md:col-span-3 flex flex-wrap items-center gap-2">
             <Info className="h-4 w-4 text-muted-foreground" aria-hidden />

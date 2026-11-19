@@ -371,7 +371,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
         <Card className="shadow-sm xl:col-span-3">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <UploadCloud className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Upload ECG recording
+              <UploadCloud className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Upload ECG recording
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -394,17 +394,17 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                 acceptFiles(e.dataTransfer.files);
               }}
               className={cn(
-                "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1d6fbe]",
+                "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1f63b8]",
                 dragging
-                  ? "border-[#1d6fbe] bg-[#e6f2fb]"
-                  : "border-[#c9d6e4] bg-[#f8fafd] hover:border-[#1d6fbe]/60 hover:bg-[#f1f6fb]",
+                  ? "border-[#1f63b8] bg-[#e9f0fa]"
+                  : "border-[#c9d6e4] bg-[#faf8f4] hover:border-[#1f63b8]/60 hover:bg-[#f1f6fb]",
                 busy && "pointer-events-none opacity-60",
               )}
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e6f2fb]">
-                <FileUp className="h-7 w-7 text-[#1d6fbe]" aria-hidden />
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e9f0fa]">
+                <FileUp className="h-7 w-7 text-[#1f63b8]" aria-hidden />
               </span>
-              <p className="mt-3 text-sm font-semibold text-[#0b1728]">
+              <p className="mt-3 text-sm font-semibold text-[#1c1917]">
                 Drag & drop a 10-second, 12-lead ECG recording
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
@@ -427,7 +427,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
             </div>
 
             {/* Patient context (drives the sex-specific Cornell threshold) */}
-            <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#e4eaf2] bg-[#f8fafd] p-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#e7e2db] bg-[#faf8f4] p-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="upl-sex" className="text-xs text-muted-foreground">
                   Recorded for (sex — sets Cornell threshold)
@@ -469,7 +469,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between text-base">
               <span className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Processing pipeline
+                <Activity className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Processing pipeline
               </span>
             </CardTitle>
           </CardHeader>
@@ -480,7 +480,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                 <li key={s.key} className="flex items-start gap-3">
                   <span className="mt-0.5">
                     {s.status === "pending" && <span className="block h-4 w-4 rounded-full border-2 border-[#d4dde8]" />}
-                    {s.status === "running" && <Loader2 className="h-4 w-4 animate-spin text-[#1d6fbe]" />}
+                    {s.status === "running" && <Loader2 className="h-4 w-4 animate-spin text-[#1f63b8]" />}
                     {s.status === "done" && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
                     {s.status === "warning" && <TriangleAlert className="h-4 w-4 text-amber-500" />}
                   </span>
@@ -488,7 +488,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                     <p
                       className={cn(
                         "text-[13px] leading-tight",
-                        s.status === "pending" ? "text-muted-foreground" : "font-semibold text-[#0b1728]",
+                        s.status === "pending" ? "text-muted-foreground" : "font-semibold text-[#1c1917]",
                       )}
                     >
                       {s.label}
@@ -566,11 +566,11 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                 {(result.predictions[1].probability * 100).toFixed(0)}%
               </Badge>
             </div>
-            <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] px-4 py-3">
+            <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] px-4 py-3">
               <LeadSparkline waveform={result.waveform} className="h-14 w-full" />
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" className="bg-[#0b1728] hover:bg-[#12233a]" onClick={() => onNavigate("visualization")}>
+              <Button size="sm" className="bg-[#1c1917] hover:bg-[#2a2320]" onClick={() => onNavigate("visualization")}>
                 View 12-lead signal
               </Button>
               <Button size="sm" variant="outline" className="bg-white" onClick={() => onNavigate("criteria")}>
@@ -585,7 +585,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
             </div>
             {fileSummary && (
               <p className="text-[11px] text-muted-foreground">
-                Source: <span className="font-medium text-[#0b1728]">{fileSummary.name}</span> ·{" "}
+                Source: <span className="font-medium text-[#1c1917]">{fileSummary.name}</span> ·{" "}
                 {(fileSummary.size / 1024).toFixed(0)} KB · decoded in-browser ({fileSummary.kind}) ·{" "}
                 {result.spec.parsed?.detail}
               </p>
@@ -598,7 +598,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
       <div>
         <div className="mb-3 flex items-end justify-between">
           <div>
-            <h3 className="text-base font-semibold text-[#0b1728]">Or explore the PTB-XL library</h3>
+            <h3 className="text-base font-semibold text-[#1c1917]">Or explore the PTB-XL library</h3>
             <p className="text-sm text-muted-foreground">
               Real test-fold recordings with their measured voltages — click a card to open
               one in the workspace.
@@ -625,7 +625,7 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
               aria-label={`Open PTB-XL recording ${a.meta.code}`}
             >
               <div className="flex items-center justify-between">
-                <p className="font-mono text-xs font-bold text-[#0b1728]">{a.meta.code}</p>
+                <p className="font-mono text-xs font-bold text-[#1c1917]">{a.meta.code}</p>
                 <VerdictBadge verdict={a.interpretation} withLabel={false} />
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground">

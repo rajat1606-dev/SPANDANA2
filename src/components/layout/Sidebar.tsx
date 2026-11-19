@@ -9,7 +9,7 @@ function BrandMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "flex h-10 w-10 items-center justify-center rounded-xl bg-[#12233a] ring-1 ring-[#1c2f47]",
+        "flex h-10 w-10 items-center justify-center rounded-xl bg-[#2a2320] ring-1 ring-[#38302b]",
         className,
       )}
     >
@@ -46,8 +46,8 @@ function NavButton({
       className={cn(
         "group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[13.5px] transition-colors",
         active
-          ? "bg-[#12233a] font-semibold text-white"
-          : "text-[#c7d3e2] hover:bg-[#12233a]/60 hover:text-white",
+          ? "bg-[#2a2320] font-semibold text-white"
+          : "text-[#c7d3e2] hover:bg-[#2a2320]/60 hover:text-white",
       )}
     >
       {active && (
@@ -62,7 +62,7 @@ function NavButton({
         <span
           className={cn(
             "ml-auto rounded-sm border px-1.5 py-0.5 text-[10px] font-medium",
-            active ? "border-cyan-400/40 text-cyan-300" : "border-[#1c2f47] text-[#7d93ad]",
+            active ? "border-cyan-400/40 text-cyan-300" : "border-[#38302b] text-[#7d93ad]",
           )}
         >
           {item.hint}
@@ -80,7 +80,7 @@ export function SidebarContent({
   onNavigate: (v: ViewId) => void;
 }) {
   return (
-    <div className="flex h-full flex-col bg-[#0b1728]">
+    <div className="flex h-full flex-col bg-[#1c1917]">
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 pb-5 pt-6">
         <BrandMark />
@@ -91,7 +91,7 @@ export function SidebarContent({
           </p>
         </div>
       </div>
-      <div className="mx-5 mb-4 rounded-lg border border-[#1c2f47] bg-[#0e1d31] px-3 py-2">
+      <div className="mx-5 mb-4 rounded-lg border border-[#38302b] bg-[#0e1d31] px-3 py-2">
         <p className="text-[11px] italic tracking-wide text-cyan-300/90">
           “See Beyond the Heartbeat.”
         </p>
@@ -114,7 +114,7 @@ export function SidebarContent({
       </nav>
 
       {/* Safety notice */}
-      <div className="border-t border-[#1c2f47] px-4 py-4">
+      <div className="border-t border-[#38302b] px-4 py-4">
         <div className="rounded-lg border border-amber-400/25 bg-amber-400/10 p-3">
           <p className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-300">
             <ShieldAlert className="h-3.5 w-3.5" aria-hidden /> Not a medical device

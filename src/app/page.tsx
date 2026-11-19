@@ -30,15 +30,15 @@ function ShellSkeleton() {
   return (
     <div className="flex min-h-screen flex-col bg-[#f4f7fb]">
       <div className="mx-auto w-full max-w-6xl flex-1 space-y-4 px-6 py-10">
-        <div className="h-36 animate-pulse rounded-xl bg-[#e4eaf2]" />
+        <div className="h-36 animate-pulse rounded-xl bg-[#e7e2db]" />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-xl bg-[#e4eaf2]" />
+            <div key={i} className="h-24 animate-pulse rounded-xl bg-[#e7e2db]" />
           ))}
         </div>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="h-64 animate-pulse rounded-xl bg-[#e4eaf2] lg:col-span-2" />
-          <div className="h-64 animate-pulse rounded-xl bg-[#e4eaf2]" />
+          <div className="h-64 animate-pulse rounded-xl bg-[#e7e2db] lg:col-span-2" />
+          <div className="h-64 animate-pulse rounded-xl bg-[#e7e2db]" />
         </div>
         <p className="text-center text-xs text-muted-foreground">Loading SPANDANA workspace…</p>
       </div>

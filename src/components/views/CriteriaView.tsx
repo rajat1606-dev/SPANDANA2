@@ -28,6 +28,7 @@ import {
 } from "recharts";
 import { AnalysisMetaRow, AnalysisSelector } from "@/components/shared/AnalysisSelector";
 import { CriterionPill, SignalOriginBadge } from "@/components/shared/badges";
+import { MODEL_COLORS } from "@/lib/chart-palette";
 import { useAnalysesStore, useSelectedAnalysis } from "@/store/analyses";
 import { criterionExplanations } from "@/lib/ecg/criteria";
 
@@ -51,14 +52,14 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
     {
       name: "SV1 + RV5/V6",
       measured: sl.sum,
-      fill: sl.positive ? "#b91c1c" : "#1d6fbe",
+      fill: sl.positive ? "#b91c1c" : MODEL_COLORS["Sokolow–Lyon"],
     },
   ];
   const coChart = [
     {
       name: `RaVL + SV3`,
       measured: co.sum,
-      fill: co.positive ? "#b91c1c" : "#089fbf",
+      fill: co.positive ? "#b91c1c" : MODEL_COLORS.Cornell,
     },
   ];
 
@@ -98,24 +99,24 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between text-base">
               <span className="flex items-center gap-2">
-                <Ruler className="h-5 w-5 text-[#1d6fbe]" aria-hidden /> Sokolow–Lyon criterion
+                <Ruler className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Sokolow–Lyon criterion
               </span>
               <CriterionPill positive={sl.positive} />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-lg bg-[#0b1728] px-4 py-3 text-center">
+            <div className="rounded-lg bg-[#1c1917] px-4 py-3 text-center">
               <p className="font-mono text-sm text-cyan-300">
                 S(V1) + R(V5 <span className="text-[#7d93ad]">or</span> V6) ≥ 3.5 mV
               </p>
             </div>
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] py-2.5">
-                <p className="sp-tabular text-lg font-bold text-[#0b1728]">{sl.sv1.toFixed(2)}</p>
+              <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] py-2.5">
+                <p className="sp-tabular text-lg font-bold text-[#1c1917]">{sl.sv1.toFixed(2)}</p>
                 <p className="text-[11px] text-muted-foreground">S in V1 (mV)</p>
               </div>
-              <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] py-2.5">
-                <p className="sp-tabular text-lg font-bold text-[#0b1728]">{sl.rv56.toFixed(2)}</p>
+              <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] py-2.5">
+                <p className="sp-tabular text-lg font-bold text-[#1c1917]">{sl.rv56.toFixed(2)}</p>
                 <p className="text-[11px] text-muted-foreground">R in V5/V6 (mV)</p>
               </div>
               <div className={`rounded-lg border py-2.5 ${sl.positive ? "border-red-200 bg-red-50" : "border-emerald-200 bg-emerald-50"}`}>
@@ -130,11 +131,11 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
                 <BarChart data={slChart} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
                   <XAxis type="number" domain={[0, Math.max(4.5, sl.sum + 0.8)]} hide />
                   <YAxis type="category" dataKey="name" hide />
-                  <ReferenceLine x={sl.threshold} stroke="#0b1728" strokeDasharray="4 3" strokeWidth={1.5} />
+                  <ReferenceLine x={sl.threshold} stroke="#1c1917" strokeDasharray="4 3" strokeWidth={1.5} />
                   <Bar dataKey="measured" name="Measured sum (mV)" barSize={22} radius={[0, 5, 5, 0]}>
                     <Cell fill={slChart[0].fill} />
                   </Bar>
-                  <Tooltip formatter={(v: number) => [`${v.toFixed(2)} mV`, "Measured"]} contentStyle={{ borderRadius: 10, fontSize: 12, borderColor: "#dfe6ef" }} cursor={{ fill: "#f1f5fa" }} />
+                  <Tooltip formatter={(v: number) => [`${v.toFixed(2)} mV`, "Measured"]} contentStyle={{ borderRadius: 10, fontSize: 12, borderColor: "#e0dad1" }} cursor={{ fill: "#f5f1ea" }} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -150,25 +151,25 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between text-base">
               <span className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-[#089fbf]" aria-hidden /> Cornell criterion
+                <Calculator className="h-5 w-5 text-[#1f63b8]" aria-hidden /> Cornell criterion
               </span>
               <CriterionPill positive={co.positive} />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-lg bg-[#0b1728] px-4 py-3 text-center">
+            <div className="rounded-lg bg-[#1c1917] px-4 py-3 text-center">
               <p className="font-mono text-sm text-cyan-300">
                 R(aVL) + S(V3) ≥ {co.threshold.toFixed(1)} mV{" "}
                 <span className="text-[#7d93ad]">({selected.meta.sex.toLowerCase()})</span>
               </p>
             </div>
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] py-2.5">
-                <p className="sp-tabular text-lg font-bold text-[#0b1728]">{co.ravl.toFixed(2)}</p>
+              <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] py-2.5">
+                <p className="sp-tabular text-lg font-bold text-[#1c1917]">{co.ravl.toFixed(2)}</p>
                 <p className="text-[11px] text-muted-foreground">R in aVL (mV)</p>
               </div>
-              <div className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] py-2.5">
-                <p className="sp-tabular text-lg font-bold text-[#0b1728]">{co.sv3.toFixed(2)}</p>
+              <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] py-2.5">
+                <p className="sp-tabular text-lg font-bold text-[#1c1917]">{co.sv3.toFixed(2)}</p>
                 <p className="text-[11px] text-muted-foreground">S in V3 (mV)</p>
               </div>
               <div className={`rounded-lg border py-2.5 ${co.positive ? "border-red-200 bg-red-50" : "border-emerald-200 bg-emerald-50"}`}>
@@ -183,11 +184,11 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
                 <BarChart data={coChart} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
                   <XAxis type="number" domain={[0, Math.max(3.6, co.sum + 0.8)]} hide />
                   <YAxis type="category" dataKey="name" hide />
-                  <ReferenceLine x={co.threshold} stroke="#0b1728" strokeDasharray="4 3" strokeWidth={1.5} />
+                  <ReferenceLine x={co.threshold} stroke="#1c1917" strokeDasharray="4 3" strokeWidth={1.5} />
                   <Bar dataKey="measured" name="Measured sum (mV)" barSize={22} radius={[0, 5, 5, 0]}>
                     <Cell fill={coChart[0].fill} />
                   </Bar>
-                  <Tooltip formatter={(v: number) => [`${v.toFixed(2)} mV`, "Measured"]} contentStyle={{ borderRadius: 10, fontSize: 12, borderColor: "#dfe6ef" }} cursor={{ fill: "#f1f5fa" }} />
+                  <Tooltip formatter={(v: number) => [`${v.toFixed(2)} mV`, "Measured"]} contentStyle={{ borderRadius: 10, fontSize: 12, borderColor: "#e0dad1" }} cursor={{ fill: "#f5f1ea" }} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -207,7 +208,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
               {agreement === "discordant" ? (
                 <Shuffle className="h-5 w-5 text-amber-500" aria-hidden />
               ) : (
-                <Info className="h-5 w-5 text-[#1d6fbe]" aria-hidden />
+                <Info className="h-5 w-5 text-[#1f63b8]" aria-hidden />
               )}
               Criteria agreement — {agreementCopy[agreement].title}
               {agreement === "discordant" && (
@@ -218,12 +219,12 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm leading-relaxed text-[#47566b]">{agreementCopy[agreement].body}</p>
+            <p className="text-sm leading-relaxed text-[#6b6158]">{agreementCopy[agreement].body}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button size="sm" variant="outline" className="bg-white" onClick={() => onNavigate("screening")}>
                 Compare with AI screening →
               </Button>
-              <Button size="sm" variant="ghost" className="text-[#1d6fbe]" onClick={() => onNavigate("visualization")}>
+              <Button size="sm" variant="ghost" className="text-[#1f63b8]" onClick={() => onNavigate("visualization")}>
                 Inspect waveform
               </Button>
             </div>
@@ -235,7 +236,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
             <CardTitle className="text-base">How the measurement works</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2.5 text-[13px] leading-relaxed text-muted-foreground">
-            <p className="rounded-md bg-[#f8fafd] p-2.5 text-[11.5px]">
+            <p className="rounded-md bg-[#faf8f4] p-2.5 text-[11.5px]">
               {decoded
                 ? "Decoded recording: R/S extremes are measured globally against the median (isoelectric) baseline of each lead — a deliberately simple research measurement."
                 : "For every beat, QRS peaks are measured relative to the local isoelectric baseline (TP segment) and averaged across the 10-second window."}
@@ -244,7 +245,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
               S-wave depth is reported as a positive magnitude. Voltages are in millivolts;
               1 mV = 10 mm on standard paper.
             </p>
-            <p className="rounded-md bg-[#f8fafd] p-2.5 text-[11.5px]">
+            <p className="rounded-md bg-[#faf8f4] p-2.5 text-[11.5px]">
               {decoded
                 ? "Values derive from the real uploaded signal — research measurements, not clinical interpretations."
                 : "Values are this PTB-XL recording’s own measured voltages — research measurements, not clinical interpretations."}

@@ -61,8 +61,13 @@ export function AnalysisSelector({
 
 export function AnalysisMetaRow({ analysis }: { analysis: EcgAnalysis }) {
   const wf = analysis.waveform;
+  // The recording's own acquisition figures where we have them; the rendered
+  // trace has its own rate and must not be reported as the recording's.
+  const rec = analysis.meta.recording;
+  const durationSec = rec?.durationSec ?? wf.durationSec;
+  const sampleHz = rec?.sampleRate ?? wf.sampleRate;
   const duration =
-    wf.durationSec % 1 === 0 ? wf.durationSec.toFixed(0) : wf.durationSec.toFixed(1);
+    durationSec % 1 === 0 ? durationSec.toFixed(0) : durationSec.toFixed(1);
   const hrLabel =
     analysis.spec.bpm > 0
       ? `${analysis.spec.bpm} bpm`
@@ -86,7 +91,7 @@ export function AnalysisMetaRow({ analysis }: { analysis: EcgAnalysis }) {
         {hrLabel}
       </Badge>
       <Badge variant="outline" className="bg-white">
-        {duration} s · 12-lead · {wf.sampleRate} Hz
+        {duration} s · 12-lead · {sampleHz} Hz
       </Badge>
       <SourceBadge meta={analysis.meta} />
       <SignalOriginBadge meta={analysis.meta} />
