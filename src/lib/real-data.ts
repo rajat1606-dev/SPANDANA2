@@ -32,6 +32,9 @@ export interface PtbxlCase {
   rv6: number;
   ravl: number;
   sv3: number;
+  /** The recording's own sampling - not the rendered trace's. */
+  sampleRate: number;
+  durationSec: number;
   sokolowLyonSum: number;
   cornellSum: number;
   cornellThreshold: number;
@@ -60,6 +63,8 @@ export const PTBXL_CASES: PtbxlCase[] = [
     rv6: 2.906,
     ravl: 1.789,
     sv3: 3.236,
+    sampleRate: 100,
+    durationSec: 10.0,
     sokolowLyonSum: 8.013,
     cornellSum: 5.025,
     cornellThreshold: 2.8,
@@ -82,6 +87,8 @@ export const PTBXL_CASES: PtbxlCase[] = [
     rv6: 0.706,
     ravl: 0.335,
     sv3: 0.367,
+    sampleRate: 100,
+    durationSec: 10.0,
     sokolowLyonSum: 1.089,
     cornellSum: 0.702,
     cornellThreshold: 2.0,
@@ -104,6 +111,8 @@ export const PTBXL_CASES: PtbxlCase[] = [
     rv6: 0.4545,
     ravl: 1.4185,
     sv3: 5.0535,
+    sampleRate: 100,
+    durationSec: 10.0,
     sokolowLyonSum: 2.657,
     cornellSum: 6.472,
     cornellThreshold: 2.8,

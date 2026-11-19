@@ -132,6 +132,13 @@ export interface PatientMeta {
   cohortLabel: CohortLabel;
   /** "decoded-file" = waveform parsed from the uploaded recording in-browser. Optional for pre-v2 persisted analyses. */
   signalOrigin?: SignalOrigin;
+  /**
+   * The source recording's own acquisition figures. For a PTB-XL library
+   * case these come from the dataset (100 Hz), NOT from the rendered trace,
+   * which the renderer draws at its own rate. Views must prefer these when
+   * labelling anything as a property of the recording.
+   */
+  recording?: { sampleRate: number; durationSec: number };
 }
 
 export interface SokolowLyonResult {

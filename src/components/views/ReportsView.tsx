@@ -32,8 +32,12 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
   const co = selected.criteria.cornell;
   const [perceptron, cnn] = selected.predictions;
   const decoded = selected.meta.signalOrigin === "decoded-file";
-  const durationSec = selected.waveform.durationSec;
+  // Prefer the recording's own figures; the rendered trace has its own rate
+  // and a nominal heart rate, which must not be printed as measurements.
+  const rec = selected.meta.recording;
+  const durationSec = rec?.durationSec ?? selected.waveform.durationSec;
   const durationLabel = durationSec % 1 === 0 ? durationSec.toFixed(0) : durationSec.toFixed(1);
+  const sampleHz = rec?.sampleRate ?? selected.waveform.sampleRate;
   const hrLabel = selected.spec.bpm > 0 ? `${selected.spec.bpm} bpm` : "n/a (not detectable)";
 
   return (
@@ -100,11 +104,19 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
               {[
                 ["Recording ID", selected.meta.code],
                 ["Subject", `${selected.meta.sex}, ${selected.meta.age} yrs`],
-                ["Heart rate", hrLabel],
-                ["Beats in window", String(selected.waveform.beats.length)],
+                [
+                  "Heart rate",
+                  decoded ? hrLabel : `${hrLabel} (nominal)`,
+                ],
+                [
+                  "Beats in window",
+                  decoded
+                    ? String(selected.waveform.beats.length)
+                    : `${selected.waveform.beats.length} (drawn)`,
+                ],
                 ["Duration", `${durationLabel} s`],
                 ["Leads", "12 (standard)"],
-                ["Sampling", `${selected.waveform.sampleRate} Hz`],
+                ["Sampling", `${sampleHz} Hz`],
                 [
                   "Source",
                   decoded

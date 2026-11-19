@@ -53,22 +53,35 @@ function regenerate(a: EcgAnalysis): EcgAnalysis {
 }
 
 /**
- * Storage keys this app has used. Anything other than the current key is
- * dead weight: zustand never reads it again, but it keeps occupying the
- * origin's localStorage budget and makes QuotaExceededError on the live
- * key more likely, so it is removed once on startup.
+ * Persisted-state key. Bump STORAGE_VERSION to discard everything persisted
+ * by an older build.
+ *
+ * Any key under the same prefix that is not the current one is dead weight:
+ * zustand never reads it again, but it keeps occupying the origin's
+ * localStorage budget and makes QuotaExceededError on the live key more
+ * likely. The sweep below is deliberately written against the prefix rather
+ * than a hand-maintained list, so bumping the version is enough on its own -
+ * an explicit list of old keys is the kind of thing that gets forgotten, and
+ * forgetting it silently strands the previous build's data forever.
  */
-const STORAGE_KEY = "spandana-analyses-v2";
-const LEGACY_STORAGE_KEYS = ["spandana-analyses-v1"];
+const STORAGE_PREFIX = "spandana-analyses-";
+const STORAGE_VERSION = 3;  // v3: analyses carry the recording's own sampling
+const STORAGE_KEY = `${STORAGE_PREFIX}v${STORAGE_VERSION}`;
 
 function dropLegacyStorage(): void {
   if (typeof window === "undefined") return;
-  for (const key of LEGACY_STORAGE_KEYS) {
-    try {
-      localStorage.removeItem(key);
-    } catch {
-      /* storage unavailable — nothing to reclaim */
+  try {
+    const stale: string[] = [];
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(STORAGE_PREFIX) && key !== STORAGE_KEY) {
+        stale.push(key);
+      }
     }
+    // Collected first: removing during enumeration shifts the indices.
+    stale.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    /* storage unavailable — nothing to reclaim */
   }
 }
 

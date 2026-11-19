@@ -148,8 +148,14 @@ export function VisualizationView({ onNavigate }: { onNavigate: (v: "criteria") 
                     label: selected.waveform.hrSource === "config" ? "Beats in window" : "R peaks detected",
                     value: String(selected.waveform.beats.length),
                   },
-                  { label: "Duration", value: `${selected.waveform.durationSec.toFixed(1)} s` },
-                  { label: "Sampling", value: `${selected.waveform.sampleRate} Hz` },
+                  {
+                    label: "Duration",
+                    value: `${(selected.meta.recording?.durationSec ?? selected.waveform.durationSec).toFixed(1)} s`,
+                  },
+                  {
+                    label: decoded ? "Sampling" : "Sampling (recording)",
+                    value: `${selected.meta.recording?.sampleRate ?? selected.waveform.sampleRate} Hz`,
+                  },
                 ].map((s) => (
                   <div key={s.label} className="rounded-lg border border-[#e4eaf2] bg-[#f8fafd] px-3 py-2.5">
                     <p className="sp-tabular text-lg font-bold text-[#0b1728]">{s.value}</p>

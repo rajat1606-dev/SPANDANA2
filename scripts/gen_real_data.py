@@ -121,6 +121,10 @@ hist = [dict(epoch=h["epoch"][i], loss=round(h["loss"][i], 5), valLoss=round(h["
         for i in range(len(h["epoch"]))]
 
 # ---- metrics ----------------------------------------------------------
+pre = json.load(io.open(P("backend/models/preprocessing.json"), encoding="utf-8"))
+REC_FS = int(pre["fs"])                      # PTB-XL records100 = 100 Hz
+REC_SECONDS = round(int(pre["signal_len"]) / REC_FS, 3)
+
 mj = json.load(io.open(P("backend/models/metrics.json"), encoding="utf-8"))
 metrics = [dict(model=m["name"], family=m["family"], accuracy=m["accuracy"], precision=m["precision"],
                 sensitivity=m["sensitivity"], specificity=m["specificity"], f1=m["f1"],
@@ -165,6 +169,9 @@ export interface PtbxlCase {
   rv6: number;
   ravl: number;
   sv3: number;
+  /** The recording's own sampling - not the rendered trace's. */
+  sampleRate: number;
+  durationSec: number;
   sokolowLyonSum: number;
   cornellSum: number;
   cornellThreshold: number;
@@ -192,6 +199,8 @@ for c in cases:
     w('    scpCodes: "%s",\n' % esc(c["scpCodes"]))
     for k in ("sv1", "rv5", "rv6", "ravl", "sv3"):
         w('    %s: %s,\n' % (k, c[k]))
+    w('    sampleRate: %d,\n' % REC_FS)
+    w('    durationSec: %s,\n' % REC_SECONDS)
     w('    sokolowLyonSum: %s,\n' % c["sokolowLyonSum"])
     w('    cornellSum: %s,\n' % c["cornellSum"])
     w('    cornellThreshold: %s,\n' % c["cornellThreshold"])
