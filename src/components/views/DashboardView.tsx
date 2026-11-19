@@ -5,7 +5,6 @@ import {
   Activity,
   ArrowRight,
   BookOpen,
-  Gauge,
   HeartPulse,
   ScanHeart,
   UploadCloud,
@@ -94,7 +93,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
         <div className="relative px-6 py-7 sm:px-8">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="border-cyan-400/40 bg-cyan-400/10 text-cyan-300">
+              <Badge variant="outline" className="border-[#8ab4e8]/40 bg-[#8ab4e8]/10 text-[#8ab4e8]">
                 PTB-XL test fold 10
               </Badge>
               <Badge variant="outline" className="hidden border-white/20 bg-white/5 text-white/80 sm:inline-flex">
@@ -112,7 +111,7 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
             </p>
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Button
-                className="bg-cyan-500 text-[#06212e] hover:bg-cyan-400"
+                className="bg-[#1f63b8] text-white hover:bg-[#174a8c]"
                 onClick={() => onNavigate("upload")}
               >
                 <UploadCloud className="h-4 w-4" aria-hidden /> Upload ECG recording
@@ -126,26 +125,22 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
               </Button>
             </div>
           </div>
-          {/* Decorative ECG pulse */}
-          <svg
-            viewBox="0 0 600 160"
-            className="pointer-events-none absolute -right-8 top-1/2 hidden h-40 w-[420px] -translate-y-1/2 opacity-30 lg:block"
-            aria-hidden
-          >
-            <path
-              d="M0 80 H120 L150 80 L165 40 L180 120 L195 55 L208 80 H320 L350 80 L365 30 L380 130 L395 50 L408 80 H600"
-              fill="none"
-              stroke="#06b6d4"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          {/* The result the page exists to report - the one hero figure. */}
+          <div className="mt-7 border-t border-white/10 pt-5 lg:absolute lg:right-8 lg:top-1/2 lg:mt-0 lg:w-[260px] lg:-translate-y-1/2 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
+            <p className="text-[56px] font-semibold leading-none tracking-tight text-white">
+              {CNN_HEADLINE.rocAuc.toFixed(2)}
+            </p>
+            <p className="mt-2 text-sm font-medium text-[#8ab4e8]">CNN ROC-AUC</p>
+            <p className="mt-1 text-[12.5px] leading-relaxed text-[#b4aca4]">
+              {CNN_HEADLINE.caught} of {CNN_HEADLINE.ofPositives} LVH caught,{" "}
+              {CNN_HEADLINE.falseAlarms} false alarms. Sokolow–Lyon reaches 0.92.
+            </p>
+          </div>
         </div>
       </Card>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           icon={ScanHeart}
           label="PTB-XL recordings analysed"
@@ -166,13 +161,6 @@ export function DashboardView({ onNavigate }: { onNavigate: (v: ViewId) => void 
           value={`${CNN_HEADLINE.caught}/${CNN_HEADLINE.ofPositives}`}
           sub={`${CNN_HEADLINE.falseAlarms} false alarms of ${CNN_HEADLINE.ofControls.toLocaleString()} controls`}
           tone="navy"
-        />
-        <StatCard
-          icon={Gauge}
-          label="Best ROC-AUC (PTB-XL test)"
-          value={CNN_HEADLINE.rocAuc.toFixed(2)}
-          sub="CNN · measured on PTB-XL test set"
-          tone="cyan"
         />
       </div>
 

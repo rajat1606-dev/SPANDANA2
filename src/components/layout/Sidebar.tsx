@@ -17,7 +17,7 @@ function BrandMark({ className }: { className?: string }) {
         <path
           d="M4 34 H18 L23 22 L31 46 L37 27 L41 34 H60"
           fill="none"
-          stroke="#06b6d4"
+          stroke="#2a78d6"
           strokeWidth="5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -51,10 +51,10 @@ function NavButton({
       )}
     >
       {active && (
-        <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-cyan-400" />
+        <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-[#8ab4e8]" />
       )}
       <Icon
-        className={cn("h-[18px] w-[18px] shrink-0", active ? "text-cyan-400" : "text-[#7d93ad] group-hover:text-[#a9bcd2]")}
+        className={cn("h-[18px] w-[18px] shrink-0", active ? "text-[#8ab4e8]" : "text-[#7d93ad] group-hover:text-[#a9bcd2]")}
         aria-hidden
       />
       <span className="truncate">{item.label}</span>
@@ -62,7 +62,7 @@ function NavButton({
         <span
           className={cn(
             "ml-auto rounded-sm border px-1.5 py-0.5 text-[10px] font-medium",
-            active ? "border-cyan-400/40 text-cyan-300" : "border-[#38302b] text-[#7d93ad]",
+            active ? "border-[#8ab4e8]/40 text-[#8ab4e8]" : "border-[#38302b] text-[#9a8f85]",
           )}
         >
           {item.hint}
@@ -92,7 +92,7 @@ export function SidebarContent({
         </div>
       </div>
       <div className="mx-5 mb-4 rounded-lg border border-[#38302b] bg-[#0e1d31] px-3 py-2">
-        <p className="text-[11px] italic tracking-wide text-cyan-300/90">
+        <p className="text-[11px] italic tracking-wide text-[#8ab4e8]/90">
           “See Beyond the Heartbeat.”
         </p>
       </div>

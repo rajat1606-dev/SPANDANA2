@@ -70,7 +70,7 @@ export function ReportsView({ onNavigate }: { onNavigate: (v: "upload") => void 
                   <path
                     d="M4 34 H18 L23 22 L31 46 L37 27 L41 34 H60"
                     fill="none"
-                    stroke="#06b6d4"
+                    stroke="#2a78d6"
                     strokeWidth="5"
                     strokeLinecap="round"
                     strokeLinejoin="round"

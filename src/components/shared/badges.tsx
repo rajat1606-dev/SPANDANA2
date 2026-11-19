@@ -119,7 +119,7 @@ export function SourceBadge({ meta }: { meta: PatientMeta }) {
       <Database className="h-3 w-3" aria-hidden /> PTB-XL library
     </Badge>
   ) : (
-    <Badge variant="outline" className="gap-1 border-cyan-200 bg-cyan-50 text-cyan-800">
+    <Badge variant="outline" className="gap-1 border-[#cfe0f5] bg-[#e9f0fa] text-[#174a8c]">
       <UploadCloud className="h-3 w-3" aria-hidden /> Uploaded file
     </Badge>
   );
@@ -132,7 +132,7 @@ export function ModelChip({ model }: { model: "perceptron" | "cnn" }) {
       <span
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-md",
-          isP ? "bg-[#e9f0fa] text-[#174a8c]" : "bg-cyan-50 text-cyan-700",
+          isP ? "bg-[#e9f0fa] text-[#174a8c]" : "bg-[#e9f0fa] text-[#174a8c]",
         )}
       >
         {isP ? <Cpu className="h-4 w-4" aria-hidden /> : <Gauge className="h-4 w-4" aria-hidden />}

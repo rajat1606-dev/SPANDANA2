@@ -20,26 +20,23 @@ export function StatCard({
   className?: string;
 }) {
   const tones: Record<string, string> = {
-    blue: "bg-[#e9f0fa] text-[#174a8c]",
-    cyan: "bg-cyan-50 text-cyan-700",
-    navy: "bg-[#1c1917] text-cyan-300",
-    amber: "bg-amber-50 text-amber-700",
-    green: "bg-emerald-50 text-emerald-700",
+    blue: "text-[#1f63b8]",
+    cyan: "text-[#1f63b8]",
+    navy: "text-[#6b6158]",
+    amber: "text-amber-700",
+    green: "text-emerald-700",
   };
   return (
-    <Card className={cn("p-5 shadow-sm transition-shadow hover:shadow-md", className)}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[13px] font-medium text-muted-foreground">{label}</p>
-          <p className="sp-tabular mt-1.5 truncate text-2xl font-bold tracking-tight text-[#1c1917]">
-            {value}
-          </p>
-          {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
-        </div>
-        <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-lg", tones[tone])}>
-          <Icon className="h-5 w-5" aria-hidden />
-        </span>
-      </div>
+    <Card className={cn("p-5", className)}>
+      <p className="flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground">
+        <Icon className={cn("h-3.5 w-3.5 shrink-0", tones[tone])} aria-hidden />
+        {label}
+      </p>
+      {/* Proportional figures: tabular-nums is for columns, not display values. */}
+      <p className="mt-2 truncate text-[26px] font-semibold leading-none tracking-tight text-[#1c1917]">
+        {value}
+      </p>
+      {sub && <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{sub}</p>}
     </Card>
   );
 }

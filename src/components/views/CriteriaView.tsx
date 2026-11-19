@@ -106,7 +106,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-lg bg-[#1c1917] px-4 py-3 text-center">
-              <p className="font-mono text-sm text-cyan-300">
+              <p className="font-mono text-sm text-[#8ab4e8]">
                 S(V1) + R(V5 <span className="text-[#7d93ad]">or</span> V6) ≥ 3.5 mV
               </p>
             </div>
@@ -158,7 +158,7 @@ export function CriteriaView({ onNavigate }: { onNavigate: (v: "screening" | "vi
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-lg bg-[#1c1917] px-4 py-3 text-center">
-              <p className="font-mono text-sm text-cyan-300">
+              <p className="font-mono text-sm text-[#8ab4e8]">
                 R(aVL) + S(V3) ≥ {co.threshold.toFixed(1)} mV{" "}
                 <span className="text-[#7d93ad]">({selected.meta.sex.toLowerCase()})</span>
               </p>

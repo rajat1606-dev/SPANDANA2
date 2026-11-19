@@ -78,26 +78,24 @@
   --sidebar-ring: #1f63b8;
 }
 
-/* ---- SPANDANA brand tokens ---- */
-:root {
-  --sp-navy: #1c1917;
-  --sp-navy-2: #2a2320;
-  --sp-navy-3: #38302b;
-  --sp-blue: #1f63b8;
-  --sp-blue-deep: #174a8c;
-  --sp-blue-soft: #e9f0fa;
-  --sp-cyan: #1f63b8;
-  --sp-cyan-bright: #06b6d4;
-  --sp-ink: #0f172a;
-  --sp-body: #6b6158;
-  --sp-ecg-ink: #14263c;
-  --sp-success: #15803d;
-  --sp-success-soft: #e8f6ec;
-  --sp-warning: #b45309;
-  --sp-warning-soft: #fdf3e3;
-  --sp-danger: #b91c1c;
-  --sp-danger-soft: #fdecec;
-}
+/*
+ * SPANDANA palette.
+ *
+ * There used to be a --sp-* block here (navy/blue/cyan/ink/...). Every one of
+ * its 17 variables was declared and never referenced: the components hardcode
+ * their colours instead. Keeping them was worse than not having them, because
+ * editing --sp-navy looks like re-theming the app and does nothing at all.
+ *
+ * The live palette is:
+ *   chrome / ink      #1c1917, #2a2320, #38302b
+ *   accent            #1f63b8 (5.9:1 on white, so it can carry link text)
+ *   accent on dark    #8ab4e8 (8.1:1 on #1c1917)
+ *   surfaces/borders  #faf8f4, #f5f1ea, #f2ede6, #e7e2db, #e0dad1
+ *   muted text        #6b6158, #7a7066
+ *
+ * Chart colours are NOT here - they live in src/lib/chart-palette.ts, which is
+ * validated for colourblind separation. Do not duplicate them.
+ */
 
 .dark {
   --background: oklch(0.145 0 0);
