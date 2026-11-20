@@ -31,9 +31,44 @@
 
 import type { EcgWaveform, ModelPrediction, PatientMeta } from "@/lib/ecg/types";
 
-const API_BASE = (process.env.NEXT_PUBLIC_FASTAPI_URL ?? "").replace(/\/$/, "");
+const BUILD_TIME_BASE = (process.env.NEXT_PUBLIC_FASTAPI_URL ?? "").replace(
+  /\/$/,
+  "",
+);
 
-export const apiConfigured = () => API_BASE.length > 0;
+/**
+ * Where a runtime override is remembered. A deployed build is compiled once
+ * with whatever NEXT_PUBLIC_FASTAPI_URL held at build time, but a backend
+ * reached through a tunnel gets a fresh hostname every restart. Rebuilding
+ * the site for each one is not sensible, so the base can also be handed to
+ * the page as ?api=<url> and is then remembered in this key.
+ */
+const OVERRIDE_KEY = "spandana-api-base";
+
+function readOverride(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    const fromQuery = new URLSearchParams(window.location.search).get("api");
+    if (fromQuery !== null) {
+      const cleaned = fromQuery.trim().replace(/\/$/, "");
+      // An empty ?api= clears the override and falls back to the build value.
+      if (cleaned === "") window.localStorage.removeItem(OVERRIDE_KEY);
+      else window.localStorage.setItem(OVERRIDE_KEY, cleaned);
+      return cleaned;
+    }
+    return window.localStorage.getItem(OVERRIDE_KEY) ?? "";
+  } catch {
+    // Private mode or blocked storage: fall back to the build-time value.
+    return "";
+  }
+}
+
+/** The base every request below is sent to. Resolved per call, not once. */
+export function apiBase(): string {
+  return readOverride() || BUILD_TIME_BASE;
+}
+
+export const apiConfigured = () => apiBase().length > 0;
 
 export interface BackendStatus {
   configured: boolean;
@@ -62,7 +97,7 @@ export async function checkBackendHealth(
   }
   try {
     const res = await fetchWithTimeout(
-      `${API_BASE}/health`,
+      `${apiBase()}/health`,
       { method: "GET" },
       timeoutMs,
     );
@@ -115,7 +150,7 @@ export async function requestModelInference(
   if (!apiConfigured()) return null;
   try {
     const res = await fetchWithTimeout(
-      `${API_BASE}/api/v1/screen`,
+      `${apiBase()}/api/v1/screen`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -171,7 +206,7 @@ export async function fetchModelMetrics(
   if (!apiConfigured()) return null;
   try {
     const res = await fetchWithTimeout(
-      `${API_BASE}/api/v1/models/metrics`,
+      `${apiBase()}/api/v1/models/metrics`,
       { method: "GET" },
       timeoutMs,
     );
