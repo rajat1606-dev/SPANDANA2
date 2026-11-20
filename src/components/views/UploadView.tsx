@@ -561,10 +561,16 @@ export function UploadView({ onNavigate }: { onNavigate: (v: ViewId) => void }) 
                 Cornell {result.criteria.cornell.sum.toFixed(2)} mV{" "}
                 {result.criteria.cornell.positive ? "≥" : "<"} {result.criteria.cornell.threshold.toFixed(1)}
               </Badge>
-              <Badge variant="outline" className="bg-white">
-                Perceptron {(result.predictions[0].probability * 100).toFixed(0)}% · CNN{" "}
-                {(result.predictions[1].probability * 100).toFixed(0)}%
-              </Badge>
+              {result.predictions.length >= 2 ? (
+                <Badge variant="outline" className="bg-white">
+                  Perceptron {(result.predictions[0].probability * 100).toFixed(0)}% · CNN{" "}
+                  {(result.predictions[1].probability * 100).toFixed(0)}%
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="border-slate-300 bg-slate-50 text-slate-600">
+                  No AI score — FastAPI backend not connected
+                </Badge>
+              )}
             </div>
             <div className="rounded-lg border border-[#e7e2db] bg-[#faf8f4] px-4 py-3">
               <LeadSparkline waveform={result.waveform} className="h-14 w-full" />
