@@ -1,0 +1,9 @@
+file,ecg_id,truth,age,sex,sokolow_mV,sokolow_thr_mV,sokolow_says,sokolow_verdict,cornell_mV,cornell_thr_mV,cornell_says,cornell_verdict,perceptron_prob,perceptron_thr,perceptron_says,perceptron_verdict,cnn_prob,cnn_thr,cnn_says,cnn_verdict,old_correct_of_2,modern_correct_of_2,outcome
+ecg_10594_LVH_both_rules_miss.csv,10594,LVH,65.0,female,3.232,3.50,normal,WRONG,1.425,2.00,normal,WRONG,0.026,0.174,normal,WRONG,0.973,0.956,LVH,correct,0,1,modern wins
+ecg_160_control_false_alarm.csv,160,Normal/Control,68.0,female,2.457,3.50,normal,correct,2.329,2.00,LVH,WRONG,0.027,0.174,normal,correct,0.029,0.956,normal,correct,1,2,modern wins
+ecg_1961_LVH_sokolow_only.csv,1961,LVH,74.0,female,3.700,3.50,LVH,correct,1.859,2.00,normal,WRONG,0.061,0.174,normal,WRONG,0.801,0.956,normal,WRONG,1,0,old rules win
+ecg_21325_LVH_cornell_only.csv,21325,LVH,83.0,male,2.657,3.50,normal,WRONG,6.472,2.80,LVH,correct,0.041,0.174,normal,WRONG,0.141,0.956,normal,WRONG,1,0,old rules win
+ecg_685_control_rule_false_alarm2.csv,685,Normal/Control,85.0,male,5.428,3.50,LVH,WRONG,2.906,2.80,LVH,WRONG,0.068,0.174,normal,correct,0.323,0.956,normal,correct,0,2,modern wins
+ecg_8241_LVH_both_rules_miss.csv,8241,LVH,85.0,male,3.046,3.50,normal,WRONG,2.332,2.80,normal,WRONG,0.057,0.174,normal,WRONG,0.966,0.956,LVH,correct,0,1,modern wins
+ecg_8963_normal_clear.csv,8963,Normal/Control,71.0,female,1.089,3.50,normal,correct,0.702,2.00,normal,correct,0.003,0.174,normal,correct,0.000,0.956,normal,correct,2,2,tie
+ecg_9869_LVH_concordant.csv,9869,LVH,67.0,male,8.013,3.50,LVH,correct,5.025,2.80,LVH,correct,0.994,0.174,LVH,correct,1.000,0.956,LVH,correct,2,2,tie

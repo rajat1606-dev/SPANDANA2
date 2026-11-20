@@ -1,0 +1,31 @@
+file,ecg_id,true_label,category,age,sex,sokolow_sum,sokolow_fires,cornell_sum,cornell_thr,cornell_fires,sokolow_says,sokolow_verdict,cornell_says,cornell_verdict,perceptron_prob,perceptron_thr,perceptron_says,perceptron_verdict,cnn_prob,cnn_thr,cnn_says,cnn_verdict,old_correct_of_2,modern_correct_of_2,outcome
+ecg_299.csv,299,LVH,LVH_concordant,59.0,female,8.177500160411,YES,3.6284999698400497,2.0,YES,LVH,correct,LVH,correct,0.995,0.174,LVH,correct,1.000,0.956,LVH,correct,2,2,tie
+ecg_336.csv,336,LVH,LVH_concordant,75.0,male,6.719500068575144,YES,4.833499953150749,2.8,YES,LVH,correct,LVH,correct,0.924,0.174,LVH,correct,1.000,0.956,LVH,correct,2,2,tie
+ecg_452.csv,452,LVH,LVH_concordant,78.0,male,4.863999921828508,YES,4.450000116601586,2.8,YES,LVH,correct,LVH,correct,0.469,0.174,LVH,correct,0.998,0.956,LVH,correct,2,2,tie
+ecg_516.csv,516,LVH,LVH_concordant,37.0,male,9.419999793171883,YES,5.863000122830272,2.8,YES,LVH,correct,LVH,correct,0.997,0.174,LVH,correct,1.000,0.956,LVH,correct,2,2,tie
+ecg_534.csv,534,LVH,LVH_concordant,80.0,female,4.856000050902367,YES,3.0095000080764294,2.0,YES,LVH,correct,LVH,correct,0.369,0.174,LVH,correct,1.000,0.956,LVH,correct,2,2,tie
+ecg_271.csv,271,LVH,LVH_cornell_only,75.0,male,3.2250000834465027,no,3.0855000307783484,2.8,YES,normal,WRONG,LVH,correct,0.030,0.174,normal,WRONG,0.987,0.956,LVH,correct,1,1,tie
+ecg_274.csv,274,LVH,LVH_cornell_only,67.0,female,3.064000046811998,no,3.3675000332295895,2.0,YES,normal,WRONG,LVH,correct,0.135,0.174,normal,WRONG,0.956,0.956,normal,WRONG,1,0,old rules win
+ecg_1013.csv,1013,LVH,LVH_cornell_only,68.0,female,2.5759999928995967,no,2.2774999951943755,2.0,YES,normal,WRONG,LVH,correct,0.044,0.174,normal,WRONG,0.853,0.956,normal,WRONG,1,0,old rules win
+ecg_1961.csv,1961,LVH,LVH_sokolow_only,74.0,female,3.699499983340502,YES,1.8589999452233315,2.0,no,LVH,correct,normal,WRONG,0.061,0.174,normal,WRONG,0.801,0.956,normal,WRONG,1,0,old rules win
+ecg_2104.csv,2104,LVH,LVH_sokolow_only,51.0,female,3.7760000862181187,YES,1.942000019364059,2.0,no,LVH,correct,normal,WRONG,0.103,0.174,normal,WRONG,0.995,0.956,LVH,correct,1,1,tie
+ecg_2213.csv,2213,LVH,LVH_sokolow_only,58.0,male,4.0070000644773245,YES,2.275000002235174,2.8,no,LVH,correct,normal,WRONG,0.140,0.174,normal,WRONG,0.894,0.956,normal,WRONG,1,0,old rules win
+ecg_5830.csv,5830,LVH,LVH_both_miss,35.0,male,3.0639998968690634,no,1.2240000218153,2.8,no,normal,WRONG,normal,WRONG,0.022,0.174,normal,WRONG,0.341,0.956,normal,WRONG,0,0,tie
+ecg_6666.csv,6666,LVH,LVH_both_miss,84.0,male,3.3120000828057528,no,1.9969999897293746,2.8,no,normal,WRONG,normal,WRONG,0.085,0.174,normal,WRONG,0.887,0.956,normal,WRONG,0,0,tie
+ecg_7619.csv,7619,LVH,LVH_both_miss,60.0,female,2.996000038459897,no,1.3140000194543973,2.0,no,normal,WRONG,normal,WRONG,0.033,0.174,normal,WRONG,0.927,0.956,normal,WRONG,0,0,tie
+ecg_8209.csv,8209,LVH,LVH_both_miss,55.0,male,2.969000077806413,no,1.8775000032037497,2.8,no,normal,WRONG,normal,WRONG,0.029,0.174,normal,WRONG,0.941,0.956,normal,WRONG,0,0,tie
+ecg_9.csv,9,Normal,NORM_clean,55.0,male,2.212999999523163,no,1.3495000024558976,2.8,no,normal,correct,normal,correct,0.006,0.174,normal,correct,0.000,0.956,normal,correct,2,2,tie
+ecg_38.csv,38,Normal,NORM_clean,40.0,male,1.7144999974407256,no,1.491500023752451,2.8,no,normal,correct,normal,correct,0.004,0.174,normal,correct,0.000,0.956,normal,correct,2,2,tie
+ecg_40.csv,40,Normal,NORM_clean,60.0,male,2.5839999420568347,no,1.6289999783039093,2.8,no,normal,correct,normal,correct,0.032,0.174,normal,correct,0.046,0.956,normal,correct,2,2,tie
+ecg_57.csv,57,Normal,NORM_clean,26.0,male,2.610999919474125,no,1.43749993853271,2.8,no,normal,correct,normal,correct,0.019,0.174,normal,correct,0.000,0.956,normal,correct,2,2,tie
+ecg_59.csv,59,Normal,NORM_clean,54.0,male,2.4419999681413174,no,1.68050003843382,2.8,no,normal,correct,normal,correct,0.010,0.174,normal,correct,0.000,0.956,normal,correct,2,2,tie
+ecg_63.csv,63,Normal,NORM_clean,30.0,male,2.6099999975413084,no,1.6284999921917915,2.8,no,normal,correct,normal,correct,0.022,0.174,normal,correct,0.008,0.956,normal,correct,2,2,tie
+ecg_65.csv,65,Normal,NORM_clean,62.0,male,2.0479999780654907,no,0.5610000174492598,2.8,no,normal,correct,normal,correct,0.008,0.174,normal,correct,0.000,0.956,normal,correct,2,2,tie
+ecg_75.csv,75,Normal,NORM_clean,31.0,male,2.346499942243099,no,1.2160000307485461,2.8,no,normal,correct,normal,correct,0.013,0.174,normal,correct,0.005,0.956,normal,correct,2,2,tie
+ecg_76.csv,76,Normal,NORM_clean,38.0,female,2.7099999487400055,no,1.7774999514222145,2.0,no,normal,correct,normal,correct,0.040,0.174,normal,correct,0.002,0.956,normal,correct,2,2,tie
+ecg_79.csv,79,Normal,NORM_clean,47.0,male,2.821000011637807,no,1.6170000359416008,2.8,no,normal,correct,normal,correct,0.055,0.174,normal,correct,0.006,0.956,normal,correct,2,2,tie
+ecg_160.csv,160,Normal,NORM_false_alarm,68.0,female,2.457000082358718,no,2.3290000446140766,2.0,YES,normal,correct,LVH,WRONG,0.027,0.174,normal,correct,0.029,0.956,normal,correct,1,2,modern wins
+ecg_180.csv,180,Normal,NORM_false_alarm,81.0,female,5.032499946653843,YES,6.314499780535698,2.0,YES,LVH,WRONG,LVH,WRONG,0.273,0.174,LVH,WRONG,0.507,0.956,normal,correct,0,1,modern wins
+ecg_245.csv,245,Normal,NORM_false_alarm,46.0,female,1.729999976232648,no,2.283499972894788,2.0,YES,normal,correct,LVH,WRONG,0.009,0.174,normal,correct,0.001,0.956,normal,correct,1,2,modern wins
+ecg_364.csv,364,Normal,NORM_false_alarm,20.0,male,4.52149997279048,YES,2.344999998807907,2.8,no,LVH,WRONG,normal,correct,0.225,0.174,LVH,WRONG,0.911,0.956,normal,correct,1,1,tie
+ecg_449.csv,449,Normal,NORM_false_alarm,63.0,female,2.240999974310398,no,2.9289999529719353,2.0,YES,normal,correct,LVH,WRONG,0.030,0.174,normal,correct,0.066,0.956,normal,correct,1,2,modern wins
